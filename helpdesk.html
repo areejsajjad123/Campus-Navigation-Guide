@@ -1,0 +1,1026 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Help Desk – Campus Navigation Guide</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet"/>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"/>
+  <style>
+    :root {
+      --green:       #1a7a4a;
+      --green-light: #25a865;
+      --green-dark:  #0f4f2f;
+      --white:       #ffffff;
+      --dark:        #1a1a2e;
+      --gray:        #555555;
+      --accent:      #f0c040;
+      --bg:          #f4f7f5;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: var(--bg);
+      color: var(--dark);
+      overflow-x: hidden;
+    }
+
+    /* ── NAVBAR ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 1000;
+      padding: 1.2rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(255,255,255,0.93);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid #e0e0e0;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+      transition: padding 0.3s;
+    }
+
+    .nav-logo {
+      font-family: 'Poppins', sans-serif;
+      font-weight: 800;
+      font-size: 1.3rem;
+      color: var(--dark);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+
+    .nav-logo .logo-icon {
+      width: 36px; height: 36px;
+      background: var(--green);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      color: #fff;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 2rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      color: #444;
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 500;
+      letter-spacing: 0.02em;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover,
+    .nav-links a.active { color: var(--green); }
+
+    .btn-nav {
+      background: var(--green);
+      color: #fff !important;
+      padding: 0.5rem 1.4rem;
+      border-radius: 50px;
+      font-weight: 600 !important;
+      transition: background 0.2s, transform 0.2s !important;
+    }
+
+    .btn-nav:hover {
+      background: var(--green-light) !important;
+      transform: translateY(-1px);
+    }
+
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      cursor: pointer;
+      background: none;
+      border: none;
+      padding: 4px;
+    }
+
+    .hamburger span {
+      display: block;
+      width: 24px; height: 2px;
+      background: var(--dark);
+      border-radius: 2px;
+      transition: all 0.3s;
+    }
+
+    /* ── PAGE HEADER ── */
+    .page-header {
+      padding: 8rem 2rem 4rem;
+      background: linear-gradient(135deg, #eaf4ef 0%, #f4f7f5 100%);
+      border-bottom: 1px solid #e0e0e0;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .page-header::before {
+      content: '';
+      position: absolute;
+      top: -80px; right: -80px;
+      width: 360px; height: 360px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(26,122,74,0.10) 0%, transparent 70%);
+    }
+
+    .page-header::after {
+      content: '';
+      position: absolute;
+      bottom: -60px; left: -60px;
+      width: 280px; height: 280px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(26,122,74,0.07) 0%, transparent 70%);
+    }
+
+    .header-inner {
+      max-width: 800px;
+      margin: 0 auto;
+      text-align: center;
+      position: relative;
+      z-index: 2;
+    }
+
+    .page-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: rgba(26,122,74,0.1);
+      border: 1px solid rgba(26,122,74,0.3);
+      color: var(--green);
+      padding: 0.35rem 1rem;
+      border-radius: 50px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      margin-bottom: 1.5rem;
+      animation: fadeDown 0.6s ease both;
+    }
+
+    .page-badge .dot {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: var(--green-light);
+      animation: pulse 2s infinite;
+    }
+
+    .page-header h1 {
+      font-size: clamp(2rem, 5vw, 3.2rem);
+      font-weight: 800;
+      line-height: 1.1;
+      color: var(--dark);
+      margin-bottom: 1rem;
+      animation: fadeUp 0.7s 0.1s ease both;
+    }
+
+    .page-header h1 span { color: var(--green); }
+
+    .page-header p {
+      font-size: 1rem;
+      color: #666;
+      line-height: 1.7;
+      max-width: 560px;
+      margin: 0 auto;
+      animation: fadeUp 0.7s 0.2s ease both;
+    }
+
+    /* ── INFO STRIP ── */
+    .info-strip {
+      background: #fff;
+      border-bottom: 1px solid #e0e0e0;
+      padding: 1.8rem 2rem;
+    }
+
+    .info-strip-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .info-chip {
+      display: flex;
+      align-items: center;
+      gap: 0.9rem;
+    }
+
+    .info-chip-icon {
+      width: 42px; height: 42px;
+      background: rgba(26,122,74,0.1);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      color: var(--green);
+      flex-shrink: 0;
+    }
+
+    .info-chip-text h5 {
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: var(--dark);
+      margin-bottom: 0.1rem;
+    }
+
+    .info-chip-text p {
+      font-size: 0.78rem;
+      color: #888;
+      margin: 0;
+    }
+
+    /* ── MAIN LAYOUT ── */
+    .main-section {
+      padding: 4rem 2rem 6rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .main-grid {
+      display: grid;
+      grid-template-columns: 1fr 380px;
+      gap: 2.5rem;
+      align-items: start;
+    }
+
+    /* ── FORM CARD ── */
+    .form-card {
+      background: #fff;
+      border: 1px solid #e0e0e0;
+      border-radius: 20px;
+      padding: 2.5rem;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+      animation: fadeUp 0.7s 0.3s ease both;
+    }
+
+    .form-card-title {
+      font-size: 1.4rem;
+      font-weight: 800;
+      color: var(--dark);
+      margin-bottom: 0.4rem;
+    }
+
+    .form-card-sub {
+      font-size: 0.88rem;
+      color: #888;
+      margin-bottom: 2rem;
+    }
+
+    .form-divider {
+      height: 1px;
+      background: #ebebeb;
+      margin-bottom: 2rem;
+    }
+
+    .field-group { margin-bottom: 1.4rem; }
+
+    .field-label {
+      display: block;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--dark);
+      margin-bottom: 0.5rem;
+      letter-spacing: 0.03em;
+    }
+
+    .field-label span { color: #e74c3c; margin-left: 2px; }
+
+    .input-wrap { position: relative; }
+
+    .field-icon {
+      position: absolute;
+      left: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #bbb;
+      font-size: 0.88rem;
+      pointer-events: none;
+      transition: color 0.2s;
+    }
+
+    .textarea-icon {
+      position: absolute;
+      left: 1rem;
+      top: 1.1rem;
+      color: #bbb;
+      font-size: 0.88rem;
+      pointer-events: none;
+      transition: color 0.2s;
+    }
+
+    .form-input {
+      width: 100%;
+      padding: 0.78rem 1rem 0.78rem 2.6rem;
+      border: 1.5px solid #e0e0e0;
+      border-radius: 12px;
+      font-family: 'Poppins', sans-serif;
+      font-size: 0.88rem;
+      color: var(--dark);
+      background: #fafafa;
+      transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+      outline: none;
+    }
+
+    .form-input:focus {
+      border-color: var(--green);
+      background: #fff;
+      box-shadow: 0 0 0 3px rgba(26,122,74,0.10);
+    }
+
+    .form-input:focus ~ .field-icon,
+    .form-input:focus ~ .textarea-icon { color: var(--green); }
+
+    textarea.form-input {
+      resize: vertical;
+      min-height: 140px;
+      padding-top: 0.85rem;
+      line-height: 1.6;
+    }
+
+    select.form-input {
+      appearance: none;
+      -webkit-appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23888' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 1rem center;
+      padding-right: 2.5rem;
+    }
+
+    .char-counter {
+      font-size: 0.75rem;
+      color: #bbb;
+      text-align: right;
+      margin-top: 0.3rem;
+    }
+
+    .btn-submit {
+      width: 100%;
+      padding: 0.95rem;
+      background: var(--green);
+      color: #fff;
+      border: none;
+      border-radius: 50px;
+      font-family: 'Poppins', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.6rem;
+      transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
+      box-shadow: 0 4px 16px rgba(26,122,74,0.25);
+      margin-top: 0.5rem;
+    }
+
+    .btn-submit:hover {
+      background: var(--green-light);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(26,122,74,0.35);
+    }
+
+    .btn-submit:active { transform: translateY(0); }
+
+    /* ── SUCCESS BANNER ── */
+    .success-banner {
+      display: none;
+      background: linear-gradient(135deg, #eaf4ef, #d4edda);
+      border: 1.5px solid rgba(26,122,74,0.3);
+      border-radius: 16px;
+      padding: 2.5rem;
+      text-align: center;
+      margin-bottom: 1.5rem;
+      animation: fadeUp 0.5s ease both;
+    }
+
+    .success-banner.show { display: block; }
+
+    .success-icon {
+      width: 60px; height: 60px;
+      background: var(--green);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1.2rem;
+      font-size: 1.5rem;
+      color: #fff;
+      box-shadow: 0 0 0 10px rgba(26,122,74,0.12);
+    }
+
+    .success-banner h4 {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--green-dark);
+      margin-bottom: 0.5rem;
+    }
+
+    .success-banner p {
+      font-size: 0.9rem;
+      color: #555;
+      margin-bottom: 1.2rem;
+    }
+
+    .tracking-id {
+      display: inline-block;
+      background: rgba(26,122,74,0.1);
+      border: 1px solid rgba(26,122,74,0.25);
+      color: var(--green);
+      padding: 0.35rem 1.2rem;
+      border-radius: 50px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+    }
+
+    /* ── SIDEBAR ── */
+    .sidebar { display: flex; flex-direction: column; gap: 1.5rem; }
+
+    .side-card {
+      background: #fff;
+      border: 1px solid #e0e0e0;
+      border-radius: 16px;
+      padding: 1.8rem;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+      animation: fadeUp 0.7s 0.4s ease both;
+    }
+
+    .side-card-title {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--dark);
+      margin-bottom: 1.2rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .side-card-title i { color: var(--green); font-size: 0.95rem; }
+
+    /* Status tracker */
+    .status-track { display: flex; flex-direction: column; }
+
+    .status-step {
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+      position: relative;
+    }
+
+    .status-step:not(:last-child)::after {
+      content: '';
+      position: absolute;
+      left: 17px;
+      top: 36px;
+      width: 2px;
+      height: calc(100% - 10px);
+      background: #e0e0e0;
+    }
+
+    .status-dot {
+      width: 34px; height: 34px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+      flex-shrink: 0;
+      margin-bottom: 1.5rem;
+    }
+
+    .status-dot.done   { background: rgba(26,122,74,0.1); color: var(--green); border: 1.5px solid rgba(26,122,74,0.3); }
+    .status-dot.active { background: var(--green); color: #fff; box-shadow: 0 0 0 4px rgba(26,122,74,0.15); }
+    .status-dot.wait   { background: #f4f4f4; color: #ccc; border: 1.5px solid #e0e0e0; }
+
+    .status-info h6 {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--dark);
+      margin-bottom: 0.15rem;
+    }
+
+    .status-info p { font-size: 0.76rem; color: #aaa; margin: 0; }
+
+    /* FAQ */
+    .faq-item {
+      border-bottom: 1px solid #f0f0f0;
+      padding: 0.9rem 0;
+    }
+
+    .faq-item:last-child { border-bottom: none; padding-bottom: 0; }
+
+    .faq-q {
+      font-size: 0.84rem;
+      font-weight: 600;
+      color: var(--dark);
+      margin-bottom: 0.3rem;
+      display: flex;
+      align-items: flex-start;
+      gap: 0.5rem;
+    }
+
+    .faq-q i { color: var(--green); font-size: 0.75rem; margin-top: 3px; flex-shrink: 0; }
+    .faq-a   { font-size: 0.78rem; color: #888; line-height: 1.6; padding-left: 1.2rem; }
+
+    /* Contact */
+    .contact-row {
+      display: flex;
+      align-items: center;
+      gap: 0.9rem;
+      padding: 0.7rem 0;
+      border-bottom: 1px solid #f0f0f0;
+    }
+
+    .contact-row:last-child { border-bottom: none; }
+
+    .contact-icon {
+      width: 36px; height: 36px;
+      background: rgba(26,122,74,0.09);
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      color: var(--green); font-size: 0.85rem; flex-shrink: 0;
+    }
+
+    .contact-info h6 { font-size: 0.8rem; font-weight: 700; color: var(--dark); margin-bottom: 0.1rem; }
+    .contact-info p  { font-size: 0.75rem; color: #888; margin: 0; }
+
+    /* ── MY QUERIES ── */
+    .queries-section {
+      padding: 0 2rem 5rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .section-heading     { font-size: 1.4rem; font-weight: 800; color: var(--dark); margin-bottom: 0.3rem; }
+    .section-heading-sub { font-size: 0.88rem; color: #888; margin-bottom: 2rem; }
+
+    .queries-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 1.2rem;
+    }
+
+    .query-card {
+      background: #fff;
+      border: 1px solid #e0e0e0;
+      border-radius: 16px;
+      padding: 1.5rem;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+      transition: all 0.25s;
+      position: relative;
+      overflow: hidden;
+      animation: fadeUp 0.6s ease both;
+    }
+
+    .query-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 4px; height: 100%;
+      border-radius: 4px 0 0 4px;
+    }
+
+    .query-card.pending::before  { background: var(--accent); }
+    .query-card.progress::before { background: #3498db; }
+    .query-card.resolved::before { background: var(--green-light); }
+
+    .query-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.09);
+    }
+
+    .query-card-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 0.8rem;
+    }
+
+    .query-id { font-size: 0.82rem; font-weight: 600; color: #888; }
+
+    .status-pill {
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 0.2rem 0.8rem;
+      border-radius: 50px;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+
+    .status-pill.pending  { background: rgba(240,192,64,0.15);  color: #b89000; }
+    .status-pill.progress { background: rgba(52,152,219,0.12);  color: #2471a3; }
+    .status-pill.resolved { background: rgba(37,168,101,0.12);  color: #1a7a4a; }
+
+    .query-msg  { font-size: 0.9rem; color: #444; line-height: 1.6; margin-bottom: 1rem; }
+
+    .query-meta {
+      display: flex;
+      align-items: center;
+      gap: 1.2rem;
+      font-size: 0.75rem;
+      color: #aaa;
+    }
+
+    .query-meta span { display: flex; align-items: center; gap: 0.3rem; }
+
+    .admin-reply {
+      margin-top: 1rem;
+      background: #f4f7f5;
+      border-left: 3px solid var(--green);
+      border-radius: 0 10px 10px 0;
+      padding: 0.8rem 1rem;
+    }
+
+    .admin-reply-label {
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--green);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.3rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .admin-reply p { font-size: 0.83rem; color: #555; margin: 0; line-height: 1.55; }
+
+    /* ── FOOTER ── */
+    footer {
+      padding: 2.5rem 2rem;
+      background: var(--dark);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .footer-logo { font-weight: 800; font-size: 1.1rem; color: rgba(255,255,255,0.85); }
+    .footer-text { color: rgba(255,255,255,0.4); font-size: 0.82rem; }
+    .footer-links { display: flex; gap: 1.5rem; }
+    .footer-links a { color: rgba(255,255,255,0.4); text-decoration: none; font-size: 0.82rem; transition: color 0.2s; }
+    .footer-links a:hover { color: rgba(255,255,255,0.9); }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeUp   { from{opacity:0;transform:translateY(20px);}  to{opacity:1;transform:translateY(0);} }
+    @keyframes fadeDown { from{opacity:0;transform:translateY(-12px);} to{opacity:1;transform:translateY(0);} }
+    @keyframes pulse    { 0%,100%{opacity:1;transform:scale(1);} 50%{opacity:.5;transform:scale(.8);} }
+
+    .fade-in { opacity:0; transform:translateY(24px); transition: opacity 0.6s ease, transform 0.6s ease; }
+    .fade-in.visible { opacity:1; transform:translateY(0); }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 992px) {
+      .main-grid { grid-template-columns: 1fr; }
+      .hamburger { display: flex; }
+      .nav-links {
+        display: none;
+        position: absolute;
+        top: 100%; left:0; right:0;
+        background: #fff;
+        flex-direction: column;
+        padding: 1.5rem 2rem;
+        gap: 1.2rem;
+        border-bottom: 1px solid #e0e0e0;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      }
+      .nav-links.open { display: flex; }
+    }
+
+    @media (max-width: 576px) {
+      .form-card { padding: 1.5rem; }
+      .info-strip-inner { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav id="navbar">
+    <a href="index.html" class="nav-logo">
+      <div class="logo-icon"><i class="fas fa-map-marker-alt"></i></div>
+      CampusNav
+    </a>
+    <button class="hamburger" id="hamburger" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="campus-map.html">Campus Map</a></li>
+      <li><a >Search</a></li>
+      <li><a href="helpdesk.html" class="active">Help Desk</a></li>
+      <li><a href="dashboard.html">My Queries</a></li>
+      <li><a href="login.html" class="btn-nav">Logout</a></li>
+    </ul>
+  </nav>
+
+  <!-- PAGE HEADER -->
+  <section class="page-header">
+    <div class="header-inner">
+      <div class="page-badge"><span class="dot"></span> Support Center</div>
+      <h1>How Can We <span>Help You?</span></h1>
+      <p>Submit your queries, complaints, or questions. Our admin team will review and respond within 24 hours.</p>
+    </div>
+  </section>
+
+  <!-- INFO STRIP -->
+  <div class="info-strip">
+    <div class="info-strip-inner">
+      <div class="info-chip fade-in">
+        <div class="info-chip-icon"><i class="fas fa-clock"></i></div>
+        <div class="info-chip-text"><h5>Response Time</h5><p>Within 24 hours</p></div>
+      </div>
+      <div class="info-chip fade-in">
+        <div class="info-chip-icon"><i class="fas fa-shield-alt"></i></div>
+        <div class="info-chip-text"><h5>Secure & Private</h5><p>Your data is protected</p></div>
+      </div>
+      <div class="info-chip fade-in">
+        <div class="info-chip-icon"><i class="fas fa-check-circle"></i></div>
+        <div class="info-chip-text"><h5>Track Status</h5><p>Real-time query tracking</p></div>
+      </div>
+      <div class="info-chip fade-in">
+        <div class="info-chip-icon"><i class="fas fa-headset"></i></div>
+        <div class="info-chip-text"><h5>Admin Support</h5><p>Dedicated response team</p></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN CONTENT -->
+  <div class="main-section">
+    <div class="main-grid">
+
+      <!-- FORM COLUMN -->
+      <div>
+
+        <!-- Success Banner -->
+        <div class="success-banner" id="successBanner">
+          <div class="success-icon"><i class="fas fa-check"></i></div>
+          <h4>Query Submitted Successfully!</h4>
+          <p>Your query has been saved. Our admin team will respond within 24 hours.</p>
+          <span class="tracking-id" id="trackingId">Tracking ID: #HD-0000</span>
+        </div>
+
+        <!-- Form Card -->
+        <div class="form-card" id="formCard">
+          <div class="form-card-title">Submit a Query</div>
+          <div class="form-card-sub">Fill in the details below and we'll get back to you as soon as possible.</div>
+          <div class="form-divider"></div>
+
+          <form id="helpdeskForm" novalidate>
+
+            <!-- Name -->
+            <div class="field-group">
+              <label class="field-label" for="fullName">Full Name <span>*</span></label>
+              <div class="input-wrap">
+                <input class="form-input" type="text" id="fullName" placeholder="Enter your full name" required />
+                <i class="fas fa-user field-icon"></i>
+              </div>
+            </div>
+
+            <!-- Email -->
+            <div class="field-group">
+              <label class="field-label" for="email">Email Address <span>*</span></label>
+              <div class="input-wrap">
+                <input class="form-input" type="email" id="email" placeholder="Enter your email address" required />
+                <i class="fas fa-envelope field-icon"></i>
+              </div>
+            </div>
+
+            <!-- Message -->
+            <div class="field-group">
+              <label class="field-label" for="message">Your Query <span>*</span></label>
+              <div class="input-wrap">
+                <textarea class="form-input" id="message" placeholder="Describe your query or issue in detail..." maxlength="500" required></textarea>
+                <i class="fas fa-comment-dots textarea-icon"></i>
+              </div>
+              <div class="char-counter"><span id="charCount">0</span> / 500</div>
+            </div>
+
+            <button type="submit" class="btn-submit">
+              <i class="fas fa-paper-plane"></i> Submit Query
+            </button>
+
+          </form>
+        </div>
+      </div>
+
+      <!-- SIDEBAR -->
+      <div class="sidebar">
+
+        <!-- Query Status Tracker -->
+        <div class="side-card">
+          <div class="side-card-title"><i class="fas fa-tasks"></i> Query Status Flow</div>
+          <div class="status-track">
+            <div class="status-step">
+              <div class="status-dot done"><i class="fas fa-check"></i></div>
+              <div class="status-info"><h6>Query Submitted</h6><p>Saved to database</p></div>
+            </div>
+            <div class="status-step">
+              <div class="status-dot active"><i class="fas fa-spinner fa-spin" style="font-size:0.7rem;"></i></div>
+              <div class="status-info"><h6>Under Review</h6><p>Admin is reviewing</p></div>
+            </div>
+            <div class="status-step">
+              <div class="status-dot wait"><i class="fas fa-comment"></i></div>
+              <div class="status-info"><h6>Response Sent</h6><p>Admin replied</p></div>
+            </div>
+            <div class="status-step">
+              <div class="status-dot wait"><i class="fas fa-check-double"></i></div>
+              <div class="status-info"><h6>Resolved</h6><p>Issue closed</p></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- FAQ -->
+        <div class="side-card">
+          <div class="side-card-title"><i class="fas fa-question-circle"></i> Common Questions</div>
+          <div class="faq-item">
+            <div class="faq-q"><i class="fas fa-chevron-right"></i> Where is the Faculty of Computing?</div>
+            <div class="faq-a">Search "Computing" on the campus map for exact location and route.</div>
+          </div>
+          <div class="faq-item">
+            <div class="faq-q"><i class="fas fa-chevron-right"></i> How do I track my query?</div>
+            <div class="faq-a">Visit "My Queries" in your dashboard. Each query shows its current status and admin reply.</div>
+          </div>
+          <div class="faq-item">
+            <div class="faq-q"><i class="fas fa-chevron-right"></i> How long does admin take to reply?</div>
+            <div class="faq-a">Admin responds within 24 hours on working days.</div>
+          </div>
+          <div class="faq-item">
+            <div class="faq-q"><i class="fas fa-chevron-right"></i> GPS is not working — what to do?</div>
+            <div class="faq-a">Allow location permission in your browser settings and refresh the map page.</div>
+          </div>
+        </div>
+
+        <!-- Contact Info -->
+        <div class="side-card">
+          <div class="side-card-title"><i class="fas fa-phone-alt"></i> Direct Contact</div>
+          <div class="contact-row">
+            <div class="contact-icon"><i class="fas fa-map-marker-alt"></i></div>
+            <div class="contact-info"><h6>Location</h6><p>Govt. Islamia Graduate College, Gujranwala</p></div>
+          </div>
+          <div class="contact-row">
+            <div class="contact-icon"><i class="fas fa-envelope"></i></div>
+            <div class="contact-info"><h6>Email</h6><p>admin@gicgrw.edu.pk</p></div>
+          </div>
+          <div class="contact-row">
+            <div class="contact-icon"><i class="fas fa-clock"></i></div>
+            <div class="contact-info"><h6>Office Hours</h6><p>Mon – Fri · 9:00 AM – 5:00 PM</p></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- MY SUBMITTED QUERIES -->
+  <div class="queries-section">
+    <div class="section-heading fade-in">My Submitted Queries</div>
+    <div class="section-heading-sub fade-in">Track the status of your previously submitted queries below.</div>
+
+    <div class="queries-grid">
+
+      <!-- Pending -->
+      <div class="query-card pending fade-in">
+        <div class="query-card-top">
+          <span class="query-id">Query #HD-0041</span>
+          <span class="status-pill pending"><i class="fas fa-clock"></i> Pending</span>
+        </div>
+        <div class="query-msg">Where is the admin office located? I couldn't find it on the map.</div>
+        <div class="query-meta">
+          <span><i class="fas fa-calendar-alt"></i> Aug 08, 2026</span>
+          <span><i class="fas fa-user"></i> Student User</span>
+        </div>
+      </div>
+
+      <!-- In Progress -->
+      <div class="query-card progress fade-in" style="animation-delay:0.1s">
+        <div class="query-card-top">
+          <span class="query-id">Query #HD-0039</span>
+          <span class="status-pill progress"><i class="fas fa-spinner fa-spin"></i> In Progress</span>
+        </div>
+        <div class="query-msg">The route to the library seems incorrect. It is showing a very long path.</div>
+        <div class="query-meta">
+          <span><i class="fas fa-calendar-alt"></i> Aug 06, 2026</span>
+          <span><i class="fas fa-user"></i> Student User</span>
+        </div>
+        <div class="admin-reply">
+          <div class="admin-reply-label"><i class="fas fa-user-shield"></i> Admin Reply</div>
+          <p>We are reviewing the route data. An update will be pushed shortly.</p>
+        </div>
+      </div>
+
+      <!-- Resolved -->
+      <div class="query-card resolved fade-in" style="animation-delay:0.2s">
+        <div class="query-card-top">
+          <span class="query-id">Query #HD-0035</span>
+          <span class="status-pill resolved"><i class="fas fa-check"></i> Resolved</span>
+        </div>
+        <div class="query-msg">What are the office hours for the Faculty of Computing department?</div>
+        <div class="query-meta">
+          <span><i class="fas fa-calendar-alt"></i> Aug 01, 2026</span>
+          <span><i class="fas fa-user"></i> Student User</span>
+        </div>
+        <div class="admin-reply">
+          <div class="admin-reply-label"><i class="fas fa-user-shield"></i> Admin Reply</div>
+          <p>Office hours are Monday to Friday, 9:00 AM to 5:00 PM.</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-logo">CampusNav</div>
+    <div class="footer-text">© 2026 Govt. Islamia Graduate College, Gujranwala · BSIT22-G24</div>
+    <div class="footer-links">
+      <a href="index.html">Home</a>
+      <a href="campus-map.html">Map</a>
+      <a href="helpdesk.html">Help Desk</a>
+    </div>
+  </footer>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+  <script>
+    // Navbar scroll
+    window.addEventListener('scroll', () => {
+      document.getElementById('navbar').style.padding =
+        window.scrollY > 50 ? '0.8rem 2rem' : '1.2rem 2rem';
+    });
+
+    // Hamburger
+    document.getElementById('hamburger').addEventListener('click', () => {
+      document.getElementById('navLinks').classList.toggle('open');
+    });
+
+    // Fade-in observer
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((e, i) => {
+        if (e.isIntersecting) setTimeout(() => e.target.classList.add('visible'), i * 80);
+      });
+    }, { threshold: 0.12 });
+    document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+    // Char counter
+    const msg     = document.getElementById('message');
+    const counter = document.getElementById('charCount');
+    msg.addEventListener('input', () => { counter.textContent = msg.value.length; });
+
+    // Form submit
+    document.getElementById('helpdeskForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+
+      const name    = document.getElementById('fullName').value.trim();
+      const email   = document.getElementById('email').value.trim();
+      const message = document.getElementById('message').value.trim();
+
+      if (!name || !email || !message) {
+        alert('Please fill in all required fields.');
+        return;
+      }
+
+      try {
+        const response = await fetch('backend/submit_query.php', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name, email, message })
+        });
+        const data = await response.json();
+
+        if (data.success) {
+          document.getElementById('trackingId').textContent = 'Tracking ID: ' + data.tracking_id;
+          document.getElementById('formCard').style.display = 'none';
+          const banner = document.getElementById('successBanner');
+          banner.classList.add('show');
+          banner.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          setTimeout(() => {
+            this.reset();
+            counter.textContent = '0';
+            banner.classList.remove('show');
+            document.getElementById('formCard').style.display = 'block';
+          }, 6000);
+        } else {
+          alert(data.message || 'Something went wrong. Please try again.');
+        }
+      } catch (err) {
+        alert('Server error. Please try again.');
+      }
+    });
+  </script>
+</body>
+</html>

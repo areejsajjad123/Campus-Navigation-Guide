@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>User Dashboard – Campus Navigation Guide</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet"/>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"/>
+  <style>
+    :root {
+      --green:       #1a7a4a;
+      --green-light: #25a865;
+      --green-dark:  #0f4f2f;
+      --white:       #ffffff;
+      --dark:        #1a1a2e;
+      --gray:        #555555;
+      --accent:      #f0c040;
+      --bg:          #f4f7f5;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: var(--bg);
+      color: var(--dark);
+      overflow-x: hidden;
+    }
+
+    /* ── NAVBAR ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 1000;
+      padding: 1.2rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(255,255,255,0.93);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid #e0e0e0;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+      transition: padding 0.3s;
+    }
+
+    .nav-logo {
+      font-weight: 800;
+      font-size: 1.3rem;
+      color: var(--dark);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+
+    .nav-logo .logo-icon {
+      width: 36px; height: 36px;
+      background: var(--green);
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1rem; color: #fff;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 2rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      color: #444;
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover,
+    .nav-links a.active { color: var(--green); }
+
+    .btn-nav {
+      background: var(--green);
+      color: #fff !important;
+      padding: 0.5rem 1.4rem;
+      border-radius: 50px;
+      font-weight: 600 !important;
+      transition: background 0.2s, transform 0.2s !important;
+    }
+
+    .btn-nav:hover {
+      background: var(--green-light) !important;
+      transform: translateY(-1px);
+    }
+
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      cursor: pointer;
+      background: none;
+      border: none;
+      padding: 4px;
+    }
+
+    .hamburger span {
+      display: block;
+      width: 24px; height: 2px;
+      background: var(--dark);
+      border-radius: 2px;
+      transition: all 0.3s;
+    }
+
+    /* ── PAGE HEADER ── */
+    .page-header {
+      padding: 8rem 2rem 4rem;
+      background: linear-gradient(135deg, #eaf4ef 0%, #f4f7f5 100%);
+      border-bottom: 1px solid #e0e0e0;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .page-header::before {
+      content: '';
+      position: absolute;
+      top: -80px; right: -80px;
+      width: 360px; height: 360px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(26,122,74,0.10) 0%, transparent 70%);
+    }
+
+    .page-header::after {
+      content: '';
+      position: absolute;
+      bottom: -60px; left: -60px;
+      width: 280px; height: 280px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(26,122,74,0.07) 0%, transparent 70%);
+    }
+
+    .header-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 2;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+    }
+
+    .header-left {}
+
+    .page-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: rgba(26,122,74,0.1);
+      border: 1px solid rgba(26,122,74,0.3);
+      color: var(--green);
+      padding: 0.35rem 1rem;
+      border-radius: 50px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      margin-bottom: 1rem;
+      animation: fadeDown 0.6s ease both;
+    }
+
+    .page-badge .dot {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: var(--green-light);
+      animation: pulse 2s infinite;
+    }
+
+    .page-header h1 {
+      font-size: clamp(1.8rem, 4vw, 2.8rem);
+      font-weight: 800;
+      color: var(--dark);
+      margin-bottom: 0.4rem;
+      animation: fadeUp 0.7s 0.1s ease both;
+    }
+
+    .page-header h1 span { color: var(--green); }
+
+    .page-header p {
+      font-size: 0.95rem;
+      color: #666;
+      animation: fadeUp 0.7s 0.2s ease both;
+    }
+
+    .user-info-card {
+      background: #fff;
+      border: 1px solid #e0e0e0;
+      border-radius: 16px;
+      padding: 1.2rem 1.8rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+      animation: fadeUp 0.7s 0.3s ease both;
+    }
+
+    .user-avatar {
+      width: 52px; height: 52px;
+      background: var(--green);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.3rem; color: #fff; font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .user-details h5 {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--dark);
+      margin-bottom: 0.1rem;
+    }
+
+    .user-details p { font-size: 0.78rem; color: #888; margin: 0; }
+
+    /* ── STATS STRIP ── */
+    .stats-strip {
+      background: #fff;
+      border-bottom: 1px solid #e0e0e0;
+      padding: 1.8rem 2rem;
+    }
+
+    .stats-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .stat-chip {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .stat-icon {
+      width: 46px; height: 46px;
+      border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.1rem;
+      flex-shrink: 0;
+    }
+
+    .stat-icon.total    { background: rgba(26,122,74,0.1);  color: var(--green); }
+    .stat-icon.pending  { background: rgba(240,192,64,0.15); color: #b89000; }
+    .stat-icon.progress { background: rgba(52,152,219,0.12); color: #2471a3; }
+    .stat-icon.resolved { background: rgba(37,168,101,0.12); color: #1a7a4a; }
+
+    .stat-text h4 {
+      font-size: 1.6rem;
+      font-weight: 800;
+      color: var(--dark);
+      line-height: 1;
+      margin-bottom: 0.2rem;
+    }
+
+    .stat-text p { font-size: 0.78rem; color: #888; margin: 0; }
+
+    /* ── MAIN ── */
+    .main-section {
+      padding: 3rem 2rem 6rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    /* Filter bar */
+    .filter-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    .filter-title {
+      font-size: 1.3rem;
+      font-weight: 800;
+      color: var(--dark);
+    }
+
+    .filter-tabs {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .filter-tab {
+      padding: 0.4rem 1.1rem;
+      border-radius: 50px;
+      border: 1.5px solid #e0e0e0;
+      background: #fff;
+      font-family: 'Poppins', sans-serif;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: #888;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .filter-tab:hover { border-color: var(--green); color: var(--green); }
+
+    .filter-tab.active {
+      background: var(--green);
+      border-color: var(--green);
+      color: #fff;
+    }
+
+    /* ── QUERY CARDS ── */
+    .queries-list { display: flex; flex-direction: column; gap: 1.2rem; }
+
+    .query-card {
+      background: #fff;
+      border: 1px solid #e0e0e0;
+      border-radius: 16px;
+      padding: 1.6rem 1.6rem 1.6rem 2rem;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.25s, box-shadow 0.25s;
+      animation: fadeUp 0.6s ease both;
+    }
+
+    .query-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 4px; height: 100%;
+      border-radius: 4px 0 0 4px;
+    }
+
+    .query-card.pending::before  { background: var(--accent); }
+    .query-card.progress::before { background: #3498db; }
+    .query-card.resolved::before { background: var(--green-light); }
+
+    .query-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.09);
+    }
+
+    .query-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 0.8rem;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .query-id {
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: #aaa;
+    }
+
+    .status-pill {
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 0.25rem 0.9rem;
+      border-radius: 50px;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+
+    .status-pill.pending  { background: rgba(240,192,64,0.15);  color: #b89000; }
+    .status-pill.progress { background: rgba(52,152,219,0.12);  color: #2471a3; }
+    .status-pill.resolved { background: rgba(37,168,101,0.12);  color: #1a7a4a; }
+
+    .query-msg {
+      font-size: 0.92rem;
+      color: #333;
+      line-height: 1.65;
+      margin-bottom: 1rem;
+    }
+
+    .query-meta {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      font-size: 0.76rem;
+      color: #aaa;
+      flex-wrap: wrap;
+    }
+
+    .query-meta span { display: flex; align-items: center; gap: 0.35rem; }
+
+    /* Admin reply */
+    .admin-reply {
+      margin-top: 1.1rem;
+      background: #f4f7f5;
+      border-left: 3px solid var(--green);
+      border-radius: 0 10px 10px 0;
+      padding: 0.9rem 1.1rem;
+    }
+
+    .admin-reply-label {
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--green);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.35rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .admin-reply p {
+      font-size: 0.85rem;
+      color: #555;
+      margin: 0;
+      line-height: 1.6;
+    }
+
+    /* No queries state */
+    .empty-state {
+      text-align: center;
+      padding: 4rem 2rem;
+      display: none;
+    }
+
+    .empty-state.show { display: block; }
+
+    .empty-icon {
+      width: 70px; height: 70px;
+      background: rgba(26,122,74,0.08);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 1.2rem;
+      font-size: 1.8rem;
+      color: var(--green);
+    }
+
+    .empty-state h4 { font-size: 1.1rem; font-weight: 700; color: var(--dark); margin-bottom: 0.5rem; }
+    .empty-state p  { font-size: 0.88rem; color: #888; margin-bottom: 1.5rem; }
+
+    .btn-primary-custom {
+      background: var(--green);
+      color: #fff;
+      padding: 0.75rem 1.8rem;
+      border-radius: 50px;
+      font-weight: 600;
+      font-size: 0.95rem;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: all 0.25s;
+      box-shadow: 0 4px 16px rgba(26,122,74,0.25);
+    }
+
+    .btn-primary-custom:hover {
+      background: var(--green-light);
+      transform: translateY(-2px);
+      color: #fff;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      padding: 2.5rem 2rem;
+      background: var(--dark);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .footer-logo { font-weight: 800; font-size: 1.1rem; color: rgba(255,255,255,0.85); }
+    .footer-text { color: rgba(255,255,255,0.4); font-size: 0.82rem; }
+    .footer-links { display: flex; gap: 1.5rem; }
+    .footer-links a { color: rgba(255,255,255,0.4); text-decoration: none; font-size: 0.82rem; transition: color 0.2s; }
+    .footer-links a:hover { color: rgba(255,255,255,0.9); }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeUp   { from{opacity:0;transform:translateY(20px);}  to{opacity:1;transform:translateY(0);} }
+    @keyframes fadeDown { from{opacity:0;transform:translateY(-12px);} to{opacity:1;transform:translateY(0);} }
+    @keyframes pulse    { 0%,100%{opacity:1;transform:scale(1);} 50%{opacity:.5;transform:scale(.8);} }
+
+    .fade-in { opacity:0; transform:translateY(24px); transition: opacity 0.6s ease, transform 0.6s ease; }
+    .fade-in.visible { opacity:1; transform:translateY(0); }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 768px) {
+      .header-inner { flex-direction: column; }
+      .hamburger { display: flex; }
+      .nav-links {
+        display: none;
+        position: absolute;
+        top: 100%; left:0; right:0;
+        background: #fff;
+        flex-direction: column;
+        padding: 1.5rem 2rem;
+        gap: 1.2rem;
+        border-bottom: 1px solid #e0e0e0;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      }
+      .nav-links.open { display: flex; }
+      .filter-bar { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav id="navbar">
+    <a href="index.html" class="nav-logo">
+      <div class="logo-icon"><i class="fas fa-map-marker-alt"></i></div>
+      CampusNav
+    </a>
+    <button class="hamburger" id="hamburger" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="campus-map.html">Campus Map</a></li>
+      <li><a href="search.html">Search</a></li>
+      <li><a href="helpdesk.html">Help Desk</a></li>
+      <li><a href="dashboard.html" class="active">My Queries</a></li>
+      <li><a href="login.html" class="btn-nav">Logout</a></li>
+    </ul>
+  </nav>
+
+  <!-- PAGE HEADER -->
+  <section class="page-header">
+    <div class="header-inner">
+      <div class="header-left">
+        <div class="page-badge"><span class="dot"></span> User Dashboard</div>
+        <h1>Welcome, <span>Student</span> 👋</h1>
+        <p>Track your submitted queries and view admin replies here.</p>
+      </div>
+      <div class="user-info-card">
+        <div class="user-avatar"><i class="fas fa-user-circle"></i></div>
+        <div class="user-details">
+          <h5>Student User</h5>
+          <p>student@example.com</p>
+          <p style="color:var(--green); font-weight:600; font-size:0.75rem; margin-top:2px;">
+            <i class="fas fa-circle" style="font-size:0.5rem;"></i> Active Student
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STATS STRIP -->
+  <div class="stats-strip">
+    <div class="stats-inner">
+      <div class="stat-chip fade-in">
+        <div class="stat-icon total"><i class="fas fa-list"></i></div>
+        <div class="stat-text"><h4>5</h4><p>Total Queries</p></div>
+      </div>
+      <div class="stat-chip fade-in">
+        <div class="stat-icon pending"><i class="fas fa-clock"></i></div>
+        <div class="stat-text"><h4>2</h4><p>Pending</p></div>
+      </div>
+      <div class="stat-chip fade-in">
+        <div class="stat-icon progress"><i class="fas fa-spinner"></i></div>
+        <div class="stat-text"><h4>1</h4><p>In Progress</p></div>
+      </div>
+      <div class="stat-chip fade-in">
+        <div class="stat-icon resolved"><i class="fas fa-check-circle"></i></div>
+        <div class="stat-text"><h4>2</h4><p>Resolved</p></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN -->
+  <div class="main-section">
+
+    <!-- Filter Bar -->
+    <div class="filter-bar">
+      <div class="filter-title">My Submitted Queries</div>
+      <div class="filter-tabs">
+        <button class="filter-tab active" onclick="filterQueries('all', this)">All</button>
+        <button class="filter-tab" onclick="filterQueries('pending', this)">Pending</button>
+        <button class="filter-tab" onclick="filterQueries('progress', this)">In Progress</button>
+        <button class="filter-tab" onclick="filterQueries('resolved', this)">Resolved</button>
+      </div>
+    </div>
+
+    <!-- Queries List -->
+    <div class="queries-list" id="queriesList">
+
+      <!-- Query 1 – Pending -->
+      <div class="query-card pending fade-in" data-status="pending" style="animation-delay:0.0s">
+        <div class="query-top">
+          <span class="query-id"><i class="fas fa-hashtag" style="font-size:0.7rem;"></i> HD-0041</span>
+          <span class="status-pill pending"><i class="fas fa-clock"></i> Pending</span>
+        </div>
+        <div class="query-msg">Where is the admin office located? I couldn't find it on the campus map.</div>
+        <div class="query-meta">
+          <span><i class="fas fa-calendar-alt"></i> Aug 08, 2026</span>
+          <span><i class="fas fa-tag"></i> Navigation</span>
+        </div>
+      </div>
+
+      <!-- Query 2 – Pending -->
+      <div class="query-card pending fade-in" data-status="pending" style="animation-delay:0.1s">
+        <div class="query-top">
+          <span class="query-id"><i class="fas fa-hashtag" style="font-size:0.7rem;"></i> HD-0040</span>
+          <span class="status-pill pending"><i class="fas fa-clock"></i> Pending</span>
+        </div>
+        <div class="query-msg">Is there a parking space near the Faculty of Computing and IT building?</div>
+        <div class="query-meta">
+          <span><i class="fas fa-calendar-alt"></i> Aug 07, 2026</span>
+          <span><i class="fas fa-tag"></i> General Info</span>
+        </div>
+      </div>
+
+      <!-- Query 3 – In Progress -->
+      <div class="query-card progress fade-in" data-status="progress" style="animation-delay:0.2s">
+        <div class="query-top">
+          <span class="query-id"><i class="fas fa-hashtag" style="font-size:0.7rem;"></i> HD-0039</span>
+          <span class="status-pill progress"><i class="fas fa-spinner fa-spin"></i> In Progress</span>
+        </div>
+        <div class="query-msg">The route to the library seems incorrect. It is showing a very long path instead of the short one.</div>
+        <div class="query-meta">
+          <span><i class="fas fa-calendar-alt"></i> Aug 06, 2026</span>
+          <span><i class="fas fa-tag"></i> Route Guidance</span>
+        </div>
+        <div class="admin-reply">
+          <div class="admin-reply-label"><i class="fas fa-user-shield"></i> Admin Reply</div>
+          <p>We are reviewing the route data. An update will be pushed to the system shortly. Thank you for reporting.</p>
+        </div>
+      </div>
+
+      <!-- Query 4 – Resolved -->
+      <div class="query-card resolved fade-in" data-status="resolved" style="animation-delay:0.3s">
+        <div class="query-top">
+          <span class="query-id"><i class="fas fa-hashtag" style="font-size:0.7rem;"></i> HD-0037</span>
+          <span class="status-pill resolved"><i class="fas fa-check"></i> Resolved</span>
+        </div>
+        <div class="query-msg">How do I navigate to the Faculty of Statistics from the main gate?</div>
+        <div class="query-meta">
+          <span><i class="fas fa-calendar-alt"></i> Aug 03, 2026</span>
+          <span><i class="fas fa-tag"></i> Navigation</span>
+        </div>
+        <div class="admin-reply">
+          <div class="admin-reply-label"><i class="fas fa-user-shield"></i> Admin Reply</div>
+          <p>Enter through the main gate and take the north route past the Faculty of Computing and IT. The Faculty of Statistics is on your right.</p>
+        </div>
+      </div>
+
+      <!-- Query 5 – Resolved -->
+      <div class="query-card resolved fade-in" data-status="resolved" style="animation-delay:0.4s">
+        <div class="query-top">
+          <span class="query-id"><i class="fas fa-hashtag" style="font-size:0.7rem;"></i> HD-0035</span>
+          <span class="status-pill resolved"><i class="fas fa-check"></i> Resolved</span>
+        </div>
+        <div class="query-msg">What are the office hours for the admin office?</div>
+        <div class="query-meta">
+          <span><i class="fas fa-calendar-alt"></i> Aug 01, 2026</span>
+          <span><i class="fas fa-tag"></i> General Info</span>
+        </div>
+        <div class="admin-reply">
+          <div class="admin-reply-label"><i class="fas fa-user-shield"></i> Admin Reply</div>
+          <p>The admin office is open from 9:00 AM to 5:00 PM, Monday to Friday.</p>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Empty State -->
+    <div class="empty-state" id="emptyState">
+      <div class="empty-icon"><i class="fas fa-inbox"></i></div>
+      <h4>No Queries Found</h4>
+      <p>No queries match this filter. Submit a new query from the Help Desk.</p>
+      <a href="helpdesk.html" class="btn-primary-custom">
+        <i class="fas fa-plus"></i> Submit New Query
+      </a>
+    </div>
+
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-logo">CampusNav</div>
+    <div class="footer-text">© 2026 Govt. Islamia Graduate College, Gujranwala · BSIT22-G24</div>
+    <div class="footer-links">
+      <a href="index.html">Home</a>
+      <a href="campus-map.html">Map</a>
+      <a href="helpdesk.html">Help Desk</a>
+    </div>
+  </footer>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+  <script>
+    // Navbar scroll
+    window.addEventListener('scroll', () => {
+      document.getElementById('navbar').style.padding =
+        window.scrollY > 50 ? '0.8rem 2rem' : '1.2rem 2rem';
+    });
+
+    // Hamburger
+    document.getElementById('hamburger').addEventListener('click', () => {
+      document.getElementById('navLinks').classList.toggle('open');
+    });
+
+    // Fade-in observer
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((e, i) => {
+        if (e.isIntersecting) setTimeout(() => e.target.classList.add('visible'), i * 80);
+      });
+    }, { threshold: 0.12 });
+    document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+    // Filter queries
+    function filterQueries(status, btn) {
+      // Update active tab
+      document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+      btn.classList.add('active');
+
+      const cards = document.querySelectorAll('.query-card');
+      let visible = 0;
+
+      cards.forEach(card => {
+        if (status === 'all' || card.dataset.status === status) {
+          card.style.display = 'block';
+          visible++;
+        } else {
+          card.style.display = 'none';
+        }
+      });
+
+      // Show empty state if no results
+      const empty = document.getElementById('emptyState');
+      if (visible === 0) {
+        empty.classList.add('show');
+      } else {
+        empty.classList.remove('show');
+      }
+    }
+  </script>
+</body>
+</html>

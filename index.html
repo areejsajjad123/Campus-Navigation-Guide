@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Campus Navigation Guide</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet"/>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"/>
+  <style>
+    :root {
+      --green: #1a7a4a;
+      --green-light: #25a865;
+      --green-dark: #0f4f2f;
+      --white: #ffffff;
+      --dark: #1a1a2e;
+      --gray: #555555;
+      --accent: #f0c040;
+      --bg: #f4f7f5;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Poppins', sans-serif; background: var(--bg); color: var(--dark); overflow-x: hidden; }
+    nav { position: fixed; top: 0; left: 0; right: 0; z-index: 1000; padding: 1.2rem 2rem; display: flex; align-items: center; justify-content: space-between; background: rgba(255,255,255,0.93); backdrop-filter: blur(14px); border-bottom: 1px solid #e0e0e0; box-shadow: 0 2px 12px rgba(0,0,0,0.06); transition: all 0.3s; }
+    .nav-logo { font-weight: 800; font-size: 1.3rem; color: var(--dark); text-decoration: none; display: flex; align-items: center; gap: 0.6rem; }
+    .nav-logo .logo-icon { width: 36px; height: 36px; background: var(--green); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1rem; color: #fff; }
+    .nav-links { display: flex; align-items: center; gap: 2rem; list-style: none; }
+    .nav-links a { color: #444; text-decoration: none; font-size: 0.9rem; font-weight: 500; transition: color 0.2s; }
+    .nav-links a:hover { color: var(--green); }
+    .btn-nav { background: var(--green); color: #fff !important; padding: 0.5rem 1.4rem; border-radius: 50px; font-weight: 600 !important; transition: background 0.2s, transform 0.2s !important; }
+    .btn-nav:hover { background: var(--green-light) !important; transform: translateY(-1px); }
+    .hero { min-height: 100vh; display: flex; align-items: center; position: relative; overflow: hidden; padding: 7rem 2rem 4rem; }
+    .hero-bg { position: absolute; inset: 0; background: radial-gradient(ellipse 60% 60% at 70% 40%, rgba(26,122,74,0.12) 0%, transparent 70%), radial-gradient(ellipse 40% 40% at 10% 80%, rgba(26,122,74,0.07) 0%, transparent 60%), #eaf4ef; }
+    .hero-grid { position: absolute; inset: 0; background-image: linear-gradient(rgba(0,0,0,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(0,0,0,0.04) 1px, transparent 1px); background-size: 60px 60px; }
+    .hero-content { position: relative; z-index: 2; max-width: 650px; }
+    .hero-badge { display: inline-flex; align-items: center; gap: 0.5rem; background: rgba(26,122,74,0.1); border: 1px solid rgba(26,122,74,0.3); color: var(--green); padding: 0.35rem 1rem; border-radius: 50px; font-size: 0.82rem; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; margin-bottom: 1.8rem; animation: fadeDown 0.7s ease both; }
+    .hero-badge .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--green-light); animation: pulse 2s infinite; }
+    .hero h1 { font-size: clamp(2.8rem, 6vw, 5rem); font-weight: 800; line-height: 1.05; color: var(--dark); margin-bottom: 1.5rem; animation: fadeUp 0.8s 0.1s ease both; }
+    .hero h1 span { color: var(--green); position: relative; display: inline-block; }
+    .hero h1 span::after { content: ''; position: absolute; bottom: 2px; left: 0; right: 0; height: 3px; background: var(--green-light); border-radius: 2px; opacity: 0.4; }
+    .hero p { font-size: 1.1rem; color: #555; line-height: 1.7; max-width: 520px; margin-bottom: 2.5rem; animation: fadeUp 0.8s 0.2s ease both; }
+    .hero-buttons { display: flex; gap: 1rem; flex-wrap: wrap; animation: fadeUp 0.8s 0.3s ease both; }
+    .btn-primary-custom { background: var(--green); color: #fff; padding: 0.85rem 2rem; border-radius: 50px; font-weight: 600; font-size: 1rem; text-decoration: none; display: inline-flex; align-items: center; gap: 0.5rem; border: none; cursor: pointer; transition: all 0.25s; box-shadow: 0 4px 20px rgba(26,122,74,0.25); }
+    .btn-primary-custom:hover { background: var(--green-light); transform: translateY(-2px); box-shadow: 0 8px 28px rgba(26,122,74,0.35); color: #fff; }
+    .btn-outline-custom { background: transparent; color: var(--dark); padding: 0.85rem 2rem; border-radius: 50px; font-weight: 600; font-size: 1rem; text-decoration: none; display: inline-flex; align-items: center; gap: 0.5rem; border: 1.5px solid #ccc; cursor: pointer; transition: all 0.25s; }
+    .btn-outline-custom:hover { border-color: var(--green); color: var(--green); background: rgba(26,122,74,0.05); transform: translateY(-2px); }
+    .hero-visual { position: absolute; right: 4%; top: 50%; transform: translateY(-50%); width: clamp(320px, 40%, 500px); animation: floatCard 6s ease-in-out infinite; z-index: 2; }
+    .map-card { background: #fff; border: 1px solid #e0e0e0; border-radius: 20px; padding: 1.5rem; box-shadow: 0 12px 40px rgba(0,0,0,0.1); }
+    .map-preview { background: #d4edda; border-radius: 12px; height: 200px; position: relative; overflow: hidden; margin-bottom: 1rem; }
+    .map-dots { position: absolute; inset: 0; background-image: radial-gradient(circle, rgba(26,122,74,0.25) 1px, transparent 1px); background-size: 18px 18px; }
+    .map-route { position: absolute; top: 50%; left: 20%; width: 60%; height: 2px; background: linear-gradient(90deg, transparent, var(--green), transparent); transform: translateY(-50%); }
+    .map-pin { position: absolute; width: 32px; height: 32px; background: var(--green); border-radius: 50% 50% 50% 0; transform: rotate(-45deg); display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(26,122,74,0.4); }
+    .map-pin.pin-a { top: 35%; left: 15%; }
+    .map-pin.pin-b { top: 55%; left: 70%; background: var(--accent); }
+    .map-pin i { transform: rotate(45deg); font-size: 0.75rem; color: #fff; }
+    .card-info { display: flex; align-items: center; justify-content: space-between; }
+    .card-info-text h4 { font-size: 1rem; font-weight: 700; color: var(--dark); margin-bottom: 0.2rem; }
+    .card-info-text p { font-size: 0.8rem; color: #888; margin: 0; }
+    .card-badge { background: rgba(26,122,74,0.1); border: 1px solid var(--green); color: var(--green); padding: 0.3rem 0.8rem; border-radius: 50px; font-size: 0.78rem; font-weight: 600; }
+    .stats-section { padding: 3rem 2rem; background: #fff; border-top: 1px solid #e0e0e0; border-bottom: 1px solid #e0e0e0; }
+    .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 2rem; max-width: 900px; margin: 0 auto; text-align: center; }
+    .stat-item h3 { font-size: 2.5rem; font-weight: 800; color: var(--green); line-height: 1; }
+    .stat-item p { font-size: 0.88rem; color: #888; margin-top: 0.4rem; text-transform: uppercase; letter-spacing: 0.05em; }
+    .features-section { padding: 6rem 2rem; background: var(--bg); }
+    .section-label { font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--green); margin-bottom: 1rem; }
+    .section-title { font-size: clamp(2rem, 4vw, 3rem); font-weight: 800; line-height: 1.1; margin-bottom: 1rem; color: var(--dark); }
+    .section-sub { color: #666; font-size: 1rem; max-width: 480px; line-height: 1.7; }
+    .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin-top: 3.5rem; }
+    .feature-card { background: #fff; border: 1px solid #e0e0e0; border-radius: 16px; padding: 2rem; transition: all 0.3s; position: relative; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+    .feature-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, transparent, var(--green-light), transparent); opacity: 0; transition: opacity 0.3s; }
+    .feature-card:hover { border-color: rgba(26,122,74,0.3); box-shadow: 0 8px 24px rgba(26,122,74,0.1); transform: translateY(-4px); }
+    .feature-card:hover::before { opacity: 1; }
+    .feature-icon { width: 52px; height: 52px; background: rgba(26,122,74,0.1); border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; color: var(--green); margin-bottom: 1.2rem; transition: background 0.3s; }
+    .feature-card:hover .feature-icon { background: rgba(26,122,74,0.18); }
+    .feature-card h4 { font-size: 1.1rem; font-weight: 700; margin-bottom: 0.7rem; color: var(--dark); }
+    .feature-card p { color: #666; font-size: 0.9rem; line-height: 1.6; margin: 0; }
+    .how-section { padding: 6rem 2rem; background: #fff; border-top: 1px solid #e0e0e0; }
+    .steps-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 2rem; margin-top: 3.5rem; }
+    .step-card { text-align: center; padding: 2rem 1.5rem; }
+    .step-number { width: 56px; height: 56px; border-radius: 50%; background: var(--green); color: #fff; font-size: 1.3rem; font-weight: 800; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.2rem; box-shadow: 0 0 0 8px rgba(26,122,74,0.1); }
+    .step-card h4 { font-size: 1.05rem; font-weight: 700; margin-bottom: 0.6rem; color: var(--dark); }
+    .step-card p { color: #666; font-size: 0.88rem; line-height: 1.6; margin: 0; }
+    .cta-section { padding: 6rem 2rem; text-align: center; background: linear-gradient(135deg, #0f4f2f 0%, #25a865 100%); }
+    .cta-section h2 { font-size: clamp(2rem, 4vw, 3.2rem); font-weight: 800; margin-bottom: 1rem; color: #fff; }
+    .cta-section p { color: rgba(255,255,255,0.8); font-size: 1rem; max-width: 450px; margin: 0 auto 2.5rem; line-height: 1.7; }
+    footer { padding: 2.5rem 2rem; background: var(--dark); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; }
+    .footer-logo { font-weight: 800; font-size: 1.1rem; color: rgba(255,255,255,0.85); }
+    .footer-text { color: rgba(255,255,255,0.4); font-size: 0.82rem; }
+    .footer-links { display: flex; gap: 1.5rem; }
+    .footer-links a { color: rgba(255,255,255,0.4); text-decoration: none; font-size: 0.82rem; transition: color 0.2s; }
+    .footer-links a:hover { color: rgba(255,255,255,0.9); }
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes fadeDown { from { opacity: 0; transform: translateY(-12px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.5; transform: scale(0.8); } }
+    @keyframes floatCard { 0%, 100% { transform: translateY(-50%) translateY(0); } 50% { transform: translateY(-50%) translateY(-12px); } }
+    .fade-in { opacity: 0; transform: translateY(24px); transition: opacity 0.6s ease, transform 0.6s ease; }
+    .fade-in.visible { opacity: 1; transform: translateY(0); }
+    .hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; background: none; border: none; padding: 4px; }
+    .hamburger span { display: block; width: 24px; height: 2px; background: var(--dark); border-radius: 2px; transition: all 0.3s; }
+    @media (max-width: 992px) {
+      .hero-visual { display: none; }
+      .hamburger { display: flex; }
+      .nav-links { display: none; position: absolute; top: 100%; left: 0; right: 0; background: #fff; flex-direction: column; padding: 1.5rem 2rem; gap: 1.2rem; border-bottom: 1px solid #e0e0e0; box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+      .nav-links.open { display: flex; }
+    }
+  </style>
+</head>
+<body>
+  <nav id="navbar">
+    <a href="index.html" class="nav-logo">
+      <div class="logo-icon"><i class="fas fa-map-marker-alt"></i></div>
+      CampusNav
+    </a>
+    <button class="hamburger" id="hamburger" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="#features">Features</a></li>
+      <li><a href="#how">How It Works</a></li>
+      <li><a href="campus-map.html">Campus Map</a></li>
+      <li><a href="login.html">Login</a></li>
+      <li><a href="register.html" class="btn-nav">Sign Up</a></li>
+    </ul>
+  </nav>
+
+  <section class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-grid"></div>
+    <div class="container-fluid" style="max-width:1300px">
+      <div class="hero-content">
+        <div class="hero-badge"><span class="dot"></span> GOVT. ISLAMIA COLLEGE, GUJRANWALA</div>
+        <h1>Navigate Your<br><span>Campus</span><br>with Ease</h1>
+        <p>Find any building, department, or office instantly. Get real-time route guidance and submit help desk queries — all in one place.</p>
+        <div class="hero-buttons">
+          <a href="register.html" class="btn-primary-custom"><i class="fas fa-map"></i> Explore Map</a>
+          <a href="#features" class="btn-outline-custom"><i class="fas fa-info-circle"></i> Learn More</a>
+        </div>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <div class="map-card">
+        <div class="map-preview">
+          <div class="map-dots"></div>
+          <div class="map-route"></div>
+          <div class="map-pin pin-a"><i class="fas fa-map-marker-alt"></i></div>
+          <div class="map-pin pin-b"><i class="fas fa-flag"></i></div>
+        </div>
+        <div class="card-info">
+          <div class="card-info-text"><h4>Faculty of Computing</h4><p>2 min walk · Route ready</p></div>
+          <div class="card-badge">Live</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="stats-section">
+    <div class="stats-grid">
+      <div class="stat-item fade-in"><h3>17</h3><p>Campus Locations</p></div>
+      <div class="stat-item fade-in"><h3>4</h3><p>User Roles Supported</p></div>
+      <div class="stat-item fade-in"><h3>&lt;2s</h3><p>Map Load Time</p></div>
+      <div class="stat-item fade-in"><h3>24h</h3><p>Help Desk Response</p></div>
+    </div>
+  </section>
+
+  <section class="features-section" id="features">
+    <div class="container-fluid" style="max-width:1200px">
+      <div class="section-label">What We Offer</div>
+      <h2 class="section-title">Everything You Need<br>to Navigate Campus</h2>
+      <p class="section-sub">A complete web-based system designed for students, visitors, and staff of Govt. Islamia Graduate College.</p>
+      <div class="features-grid">
+        <div class="feature-card fade-in">
+          <div class="feature-icon"><i class="fas fa-map"></i></div>
+          <h4>Interactive Campus Map</h4>
+          <p>View the full campus map with markers for every building, department, lab, and office. Powered by Leaflet.js and OpenStreetMap.</p>
+        </div>
+        <div class="feature-card fade-in">
+          <div class="feature-icon"><i class="fas fa-search-location"></i></div>
+          <h4>Smart Location Search</h4>
+          <p>Type any location name and instantly get results pinned on the map with building details, timings, and contact info.</p>
+        </div>
+        <div class="feature-card fade-in">
+          <div class="feature-icon"><i class="fas fa-route"></i></div>
+          <h4>Route Guidance</h4>
+          <p>Get the shortest route from your current GPS location to any destination on campus in seconds.</p>
+        </div>
+        <div class="feature-card fade-in">
+          <div class="feature-icon"><i class="fas fa-crosshairs"></i></div>
+          <h4>Live Location Detection</h4>
+          <p>Allow browser GPS access to see exactly where you are on campus and navigate from your current position.</p>
+        </div>
+        <div class="feature-card fade-in">
+          <div class="feature-icon"><i class="fas fa-headset"></i></div>
+          <h4>Online Help Desk</h4>
+          <p>Submit queries and complaints directly through the system. No need to visit offices physically.</p>
+        </div>
+        <div class="feature-card fade-in">
+          <div class="feature-icon"><i class="fas fa-user-shield"></i></div>
+          <h4>Admin Dashboard</h4>
+          <p>Administrators can manage campus locations, view all user queries, and respond with full control.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="how-section" id="how">
+    <div class="container-fluid" style="max-width:1200px">
+      <div class="text-center">
+        <div class="section-label">Simple Process</div>
+        <h2 class="section-title">How It Works</h2>
+        <p class="section-sub mx-auto">Get from confused to navigating in just a few clicks.</p>
+      </div>
+      <div class="steps-grid">
+        <div class="step-card fade-in"><div class="step-number">1</div><h4>Open the App</h4><p>Launch the Campus Navigation Guide in any browser. No installation required.</p></div>
+        <div class="step-card fade-in"><div class="step-number">2</div><h4>Search a Location</h4><p>Type the name of any building, lab, office, or department on campus.</p></div>
+        <div class="step-card fade-in"><div class="step-number">3</div><h4>Get Your Route</h4><p>The system detects your position and generates the shortest route instantly.</p></div>
+        <div class="step-card fade-in"><div class="step-number">4</div><h4>Need Help? Ask!</h4><p>Submit a help desk query anytime and receive a reply from the admin team.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="cta-section">
+    <h2>Ready to Explore<br>Your Campus?</h2>
+    <p>Join students and visitors already using Campus Navigation Guide to find their way around.</p>
+    <div style="display:flex; gap:1rem; justify-content:center; flex-wrap:wrap;">
+      <a href="register.html" class="btn-primary-custom" style="background:#fff; color:var(--green);"><i class="fas fa-user-plus"></i> Get Started Free</a>
+      <a href="login.html" class="btn-outline-custom" style="border-color:rgba(255,255,255,0.5); color:#fff;"><i class="fas fa-sign-in-alt"></i> Login</a>
+    </div>
+  </section>
+
+  <footer>
+    <div class="footer-logo">CampusNav</div>
+    <div class="footer-text">© 2026 Govt. Islamia Graduate College, Gujranwala · BSIT22-G24</div>
+    <div class="footer-links">
+      <a href="#features">Features</a>
+      <a href="#how">How It Works</a>
+      <a href="campus-map.html">Map</a>
+      <a href="login.html">Login</a>
+    </div>
+  </footer>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+  <script>
+    const hamburger = document.getElementById('hamburger');
+    const navLinks  = document.getElementById('navLinks');
+    hamburger.addEventListener('click', () => navLinks.classList.toggle('open'));
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((e, i) => { if (e.isIntersecting) { setTimeout(() => e.target.classList.add('visible'), i * 80); } });
+    }, { threshold: 0.15 });
+    document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+    window.addEventListener('scroll', () => {
+      document.getElementById('navbar').style.padding = window.scrollY > 50 ? '0.8rem 2rem' : '1.2rem 2rem';
+    });
+  </script>
+</body>
+</html>

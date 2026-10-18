@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Login – Campus Navigation Guide</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"/>
+  <style>
+    :root { --green: #1a7a4a; --green-light: #25a865; --green-dark: #0f4f2f; --dark: #1a1a2e; --bg: #f4f7f5; }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Poppins', sans-serif; background: var(--bg); color: var(--dark); min-height: 100vh; display: flex; flex-direction: column; }
+    nav { background: #fff; padding: 1rem 2rem; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #e0e0e0; box-shadow: 0 2px 12px rgba(0,0,0,0.06); }
+    .nav-logo { font-weight: 800; font-size: 1.2rem; color: var(--dark); text-decoration: none; display: flex; align-items: center; gap: 0.6rem; }
+    .nav-logo .logo-icon { width: 34px; height: 34px; background: var(--green); border-radius: 9px; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 0.95rem; }
+    .nav-right a { text-decoration: none; font-size: 0.88rem; font-weight: 500; color: #555; transition: color 0.2s; }
+    .nav-right a:hover { color: var(--green); }
+    .nav-right a span { color: var(--green); font-weight: 700; }
+    .auth-wrapper { flex: 1; display: flex; align-items: center; justify-content: center; padding: 3rem 1.5rem; }
+    .auth-container { display: flex; width: 100%; max-width: 960px; background: #fff; border-radius: 24px; overflow: hidden; box-shadow: 0 16px 48px rgba(0,0,0,0.1); }
+    .auth-left { flex: 1; background: linear-gradient(145deg, #0f4f2f 0%, #25a865 100%); padding: 3rem 2.5rem; display: flex; flex-direction: column; justify-content: center; position: relative; overflow: hidden; }
+    .auth-left::before { content: ''; position: absolute; top: -60px; right: -60px; width: 220px; height: 220px; border-radius: 50%; background: rgba(255,255,255,0.06); }
+    .auth-left::after { content: ''; position: absolute; bottom: -40px; left: -40px; width: 180px; height: 180px; border-radius: 50%; background: rgba(255,255,255,0.06); }
+    .auth-left-content { position: relative; z-index: 1; }
+    .auth-left .big-icon { width: 68px; height: 68px; background: rgba(255,255,255,0.15); border-radius: 18px; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; color: #fff; margin-bottom: 1.8rem; margin-left: auto; }
+    .auth-left h2 { font-size: 1.9rem; font-weight: 800; color: #ffffff; line-height: 1.2; margin-bottom: 0.8rem; }
+    .auth-left p { color: rgba(255,255,255,0.75); font-size: 0.92rem; line-height: 1.7; margin-bottom: 2rem; }
+    .feature-list { list-style: none; display: flex; flex-direction: column; gap: 0.9rem; }
+    .feature-list li { display: flex; align-items: center; gap: 0.7rem; color: rgba(255,255,255,0.85); font-size: 0.88rem; font-weight: 500; }
+    .feature-list li i { width: 28px; height: 28px; background: rgba(255,255,255,0.15); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 0.78rem; flex-shrink: 0; }
+    .auth-right { flex: 1; padding: 3rem 2.5rem; display: flex; flex-direction: column; justify-content: center; }
+    .auth-right h3 { font-size: 1.7rem; font-weight: 800; color: var(--dark); margin-bottom: 0.4rem; }
+    .auth-right .subtitle { font-size: 0.88rem; color: #888; margin-bottom: 2rem; }
+    .form-group { margin-bottom: 1.2rem; }
+    .form-group label { display: block; font-size: 0.82rem; font-weight: 600; color: #444; margin-bottom: 0.4rem; }
+    .input-wrap { position: relative; }
+    .input-wrap i { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: #aaa; font-size: 0.9rem; transition: color 0.2s; }
+    .input-wrap input { width: 100%; padding: 0.75rem 1rem 0.75rem 2.6rem; border: 1.5px solid #e0e0e0; border-radius: 10px; font-family: 'Poppins', sans-serif; font-size: 0.88rem; color: var(--dark); background: #fafafa; outline: none; transition: border-color 0.2s, box-shadow 0.2s; }
+    .input-wrap input:focus { border-color: var(--green); box-shadow: 0 0 0 3px rgba(26,122,74,0.1); background: #fff; }
+    .toggle-pw { position: absolute; right: 14px; top: 50%; transform: translateY(-50%); color: #aaa; font-size: 0.9rem; cursor: pointer; left: auto; transition: color 0.2s; }
+    .toggle-pw:hover { color: var(--green); }
+    .form-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.4rem; }
+    .remember-me { display: flex; align-items: center; gap: 0.4rem; font-size: 0.82rem; color: #555; cursor: pointer; }
+    .remember-me input[type="checkbox"] { accent-color: var(--green); width: 15px; height: 15px; }
+    .forgot-link { font-size: 0.82rem; color: var(--green); text-decoration: none; font-weight: 600; transition: opacity 0.2s; }
+    .forgot-link:hover { opacity: 0.75; }
+    .btn-submit { width: 100%; background: var(--green); color: #fff; border: none; border-radius: 10px; padding: 0.85rem; font-family: 'Poppins', sans-serif; font-size: 1rem; font-weight: 700; cursor: pointer; transition: all 0.25s; box-shadow: 0 4px 16px rgba(26,122,74,0.25); display: flex; align-items: center; justify-content: center; gap: 0.5rem; }
+    .btn-submit:hover { background: var(--green-light); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(26,122,74,0.3); }
+    .divider { display: flex; align-items: center; gap: 0.8rem; margin: 1.4rem 0; }
+    .divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: #e5e5e5; }
+    .divider span { font-size: 0.78rem; color: #aaa; font-weight: 500; white-space: nowrap; }
+    .signup-link { text-align: center; font-size: 0.85rem; color: #666; }
+    .signup-link a { color: var(--green); font-weight: 700; text-decoration: none; }
+    .signup-link a:hover { text-decoration: underline; }
+    .error-msg { display: none; background: #fee2e2; border: 1px solid #fca5a5; color: #dc2626; border-radius: 8px; padding: 0.6rem 0.9rem; font-size: 0.82rem; margin-bottom: 1rem; align-items: center; gap: 0.5rem; }
+    .error-msg.show { display: flex; }
+
+    /* Admin login link */
+    .admin-link { text-align: center; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid #f0f0f0; }
+    .admin-link a { font-size: 0.82rem; color: #888; text-decoration: none; display: inline-flex; align-items: center; gap: 0.4rem; transition: color 0.2s; }
+    .admin-link a:hover { color: var(--green); }
+
+    footer { background: var(--dark); padding: 1.2rem 2rem; text-align: center; color: rgba(255,255,255,0.35); font-size: 0.78rem; }
+    @media (max-width: 720px) { .auth-left { display: none; } .auth-right { padding: 2.5rem 1.8rem; } .auth-container { max-width: 440px; } }
+  </style>
+</head>
+<body>
+  <nav>
+    <a href="index.html" class="nav-logo">
+      <div class="logo-icon"><i class="fas fa-map-marker-alt"></i></div>
+      CampusNav
+    </a>
+    <div class="nav-right">
+      <a href="register.html">Don't have an account? <span>Sign Up</span></a>
+    </div>
+  </nav>
+
+  <div class="auth-wrapper">
+    <div class="auth-container">
+      <div class="auth-left">
+        <div class="auth-left-content">
+          <div class="big-icon"><i class="fas fa-map-marked-alt"></i></div>
+          <h2>Welcome Back!</h2>
+          <p>Log in to access the campus map, search locations, get route guidance, and manage your help desk queries.</p>
+          <ul class="feature-list">
+            <li><i class="fas fa-map"></i> Interactive Campus Map</li>
+            <li><i class="fas fa-route"></i> Route Guidance</li>
+            <li><i class="fas fa-headset"></i> Online Help Desk</li>
+            <li><i class="fas fa-crosshairs"></i> Live GPS Location</li>
+          </ul>
+        </div>
+      </div>
+      <div class="auth-right">
+        <h3>Login to your account</h3>
+        <p class="subtitle">Enter your credentials to continue</p>
+        <div class="error-msg" id="errorMsg">
+          <i class="fas fa-exclamation-circle"></i>
+          <span id="errorText">Invalid email or password.</span>
+        </div>
+        <form id="loginForm" onsubmit="handleLogin(event)">
+          <div class="form-group">
+            <label for="email">Email Address</label>
+            <div class="input-wrap">
+              <i class="fas fa-envelope"></i>
+              <input type="email" id="email" placeholder="Enter your email" required/>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="password">Password</label>
+            <div class="input-wrap">
+              <i class="fas fa-lock"></i>
+              <input type="password" id="password" placeholder="Enter your password" required/>
+              <i class="fas fa-eye toggle-pw" id="togglePw" onclick="togglePassword()"></i>
+            </div>
+          </div>
+          <div class="form-row">
+            <label class="remember-me"><input type="checkbox" id="remember"/> Remember me</label>
+            <a href="#" class="forgot-link">Forgot password?</a>
+          </div>
+          <button type="submit" class="btn-submit">Login <i class="fas fa-sign-in-alt"></i></button>
+        </form>
+        <div class="divider"><span>Don't have an account?</span></div>
+        <div class="signup-link">New to CampusNav? <a href="register.html">Create an account</a></div>
+        <div class="admin-link">
+          <a href="admin-login.html"><i class="fas fa-user-shield"></i> Admin? Login here</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer>© 2026 Govt. Islamia Graduate College, Gujranwala · BSIT22-G24</footer>
+
+  <script>
+    // ── EMAIL VALIDATION PATTERN ──
+    const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
+    function togglePassword() {
+      const pw = document.getElementById('password');
+      const icon = document.getElementById('togglePw');
+      if (pw.type === 'password') { pw.type = 'text'; icon.classList.replace('fa-eye', 'fa-eye-slash'); }
+      else { pw.type = 'password'; icon.classList.replace('fa-eye-slash', 'fa-eye'); }
+    }
+    async function handleLogin(e) {
+      e.preventDefault();
+      const email    = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value;
+      const errorMsg = document.getElementById('errorMsg');
+      const errorTxt = document.getElementById('errorText');
+
+      errorMsg.classList.remove('show');
+
+      // ── EMAIL VALIDATION ──
+      if (!email || !emailPattern.test(email)) {
+        errorTxt.textContent = 'Please enter a valid email address (e.g. abc@gmail.com).';
+        errorMsg.classList.add('show');
+        return;
+      }
+
+      // ── PASSWORD VALIDATION (same rule as register page: min 8 characters) ──
+      if (!password || password.length < 8) {
+        errorTxt.textContent = 'Password must be at least 8 characters.';
+        errorMsg.classList.add('show');
+        return;
+      }
+
+      try {
+        const response = await fetch('backend/login.php', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password })
+        });
+        const data = await response.json();
+        if (data.success) {
+          window.location.href = 'dashboard.html';
+        } else {
+          errorTxt.textContent = data.message;
+          errorMsg.classList.add('show');
+        }
+      } catch (err) {
+        errorTxt.textContent = 'Server error. Please try again.';
+        errorMsg.classList.add('show');
+      }
+    }
+    document.querySelectorAll('input').forEach(inp => {
+      inp.addEventListener('input', () => { document.getElementById('errorMsg').classList.remove('show'); });
+    });
+  </script>
+</body>
+</html>

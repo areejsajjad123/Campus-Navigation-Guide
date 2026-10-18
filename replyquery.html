@@ -1,0 +1,904 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Reply Query – Campus Navigation Guide</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet"/>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"/>
+  <style>
+    :root {
+      --green:       #1a7a4a;
+      --green-light: #25a865;
+      --green-dark:  #0f4f2f;
+      --white:       #ffffff;
+      --dark:        #1a1a2e;
+      --gray:        #555555;
+      --accent:      #f0c040;
+      --bg:          #f4f7f5;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: var(--bg);
+      color: var(--dark);
+      overflow-x: hidden;
+    }
+
+    /* ── SIDEBAR ── */
+    .sidebar {
+      position: fixed;
+      top: 0; left: 0;
+      width: 250px;
+      height: 100vh;
+      background: var(--dark);
+      display: flex;
+      flex-direction: column;
+      z-index: 999;
+      transition: transform 0.3s;
+    }
+
+    .sidebar-logo {
+      padding: 1.8rem 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .sidebar-logo .logo-icon {
+      width: 36px; height: 36px;
+      background: var(--green);
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1rem; color: #fff; flex-shrink: 0;
+    }
+
+    .sidebar-logo span { font-weight: 800; font-size: 1.1rem; color: #fff; }
+
+    .sidebar-nav { flex: 1; padding: 1.5rem 0; overflow-y: auto; }
+
+    .nav-label {
+      font-size: 0.68rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.1em;
+      color: rgba(255,255,255,0.3);
+      padding: 0.5rem 1.5rem; margin-top: 0.5rem;
+    }
+
+    .nav-item {
+      display: flex; align-items: center; gap: 0.8rem;
+      padding: 0.75rem 1.5rem;
+      color: rgba(255,255,255,0.55);
+      text-decoration: none;
+      font-size: 0.88rem; font-weight: 500;
+      cursor: pointer; transition: all 0.2s;
+      border: none; background: none;
+      width: 100%; text-align: left;
+    }
+
+    .nav-item i { width: 18px; text-align: center; font-size: 0.9rem; }
+
+    .nav-item:hover { color: #fff; background: rgba(255,255,255,0.06); }
+
+    .nav-item.active {
+      color: #fff;
+      background: rgba(26,122,74,0.25);
+      border-right: 3px solid var(--green-light);
+    }
+
+    .nav-item.active i { color: var(--green-light); }
+
+    .sidebar-footer {
+      padding: 1.2rem 1.5rem;
+      border-top: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .admin-info { display: flex; align-items: center; gap: 0.8rem; margin-bottom: 1rem; }
+
+    .admin-avatar {
+      width: 38px; height: 38px;
+      background: var(--green); border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.9rem; color: #fff; font-weight: 700; flex-shrink: 0;
+    }
+
+    .admin-info-text h6 { font-size: 0.82rem; font-weight: 700; color: #fff; margin-bottom: 0.1rem; }
+    .admin-info-text p  { font-size: 0.72rem; color: rgba(255,255,255,0.4); margin: 0; }
+
+    .btn-logout {
+      width: 100%; padding: 0.6rem;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 10px;
+      color: rgba(255,255,255,0.6);
+      font-family: 'Poppins', sans-serif;
+      font-size: 0.82rem; font-weight: 600;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center; gap: 0.5rem;
+      transition: all 0.2s; text-decoration: none;
+    }
+
+    .btn-logout:hover {
+      background: rgba(231,76,60,0.15);
+      border-color: rgba(231,76,60,0.3);
+      color: #e74c3c;
+    }
+
+    /* ── MAIN CONTENT ── */
+    .main-content { margin-left: 250px; min-height: 100vh; display: flex; flex-direction: column; }
+
+    /* Topbar */
+    .topbar {
+      background: rgba(255,255,255,0.93);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid #e0e0e0;
+      padding: 1rem 2rem;
+      display: flex; align-items: center; justify-content: space-between;
+      position: sticky; top: 0; z-index: 100;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+    }
+
+    .topbar-left { display: flex; align-items: center; gap: 0.8rem; }
+
+    .back-btn {
+      display: flex; align-items: center; gap: 0.5rem;
+      color: #888; text-decoration: none;
+      font-size: 0.82rem; font-weight: 600;
+      padding: 0.4rem 0.9rem;
+      border: 1.5px solid #e0e0e0;
+      border-radius: 50px;
+      transition: all 0.2s;
+      background: #fff;
+      cursor: pointer;
+      border: 1.5px solid #e0e0e0;
+    }
+
+    .back-btn:hover { border-color: var(--green); color: var(--green); }
+
+    .topbar-title { font-size: 1.1rem; font-weight: 800; color: var(--dark); }
+    .topbar-title span { color: var(--green); }
+
+    .topbar-badge {
+      background: rgba(26,122,74,0.1);
+      border: 1px solid rgba(26,122,74,0.25);
+      color: var(--green);
+      padding: 0.3rem 0.9rem;
+      border-radius: 50px;
+      font-size: 0.78rem; font-weight: 700;
+      display: flex; align-items: center; gap: 0.4rem;
+    }
+
+    .topbar-badge .dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--green-light);
+      animation: pulse 2s infinite;
+    }
+
+    /* ── MAIN GRID ── */
+    .page-content {
+      padding: 2rem;
+      display: grid;
+      grid-template-columns: 1fr 360px;
+      gap: 2rem;
+      align-items: start;
+      flex: 1;
+    }
+
+    /* ── QUERY DETAIL CARD ── */
+    .query-detail-card {
+      background: #fff;
+      border: 1px solid #e0e0e0;
+      border-radius: 20px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+      overflow: hidden;
+      animation: fadeUp 0.6s ease both;
+    }
+
+    .qd-header {
+      padding: 1.5rem 2rem;
+      background: linear-gradient(135deg, #eaf4ef, #f4f7f5);
+      border-bottom: 1px solid #e0e0e0;
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .qd-id {
+      font-size: 0.78rem; font-weight: 700;
+      color: #aaa; margin-bottom: 0.4rem;
+      display: flex; align-items: center; gap: 0.4rem;
+    }
+
+    .qd-title { font-size: 1.1rem; font-weight: 800; color: var(--dark); }
+
+    .status-pill {
+      font-size: 0.75rem; font-weight: 700;
+      padding: 0.3rem 1rem; border-radius: 50px;
+      display: inline-flex; align-items: center; gap: 0.35rem;
+    }
+
+    .status-pill.pending  { background: rgba(240,192,64,0.15);  color: #b89000; }
+    .status-pill.progress { background: rgba(52,152,219,0.12);  color: #2471a3; }
+    .status-pill.resolved { background: rgba(37,168,101,0.12);  color: #1a7a4a; }
+
+    .qd-body { padding: 2rem; }
+
+    .qd-meta-row {
+      display: flex; align-items: center;
+      gap: 2rem; flex-wrap: wrap;
+      margin-bottom: 1.5rem;
+    }
+
+    .qd-meta-item {
+      display: flex; align-items: center; gap: 0.5rem;
+      font-size: 0.8rem; color: #888;
+    }
+
+    .qd-meta-item i { color: var(--green); font-size: 0.78rem; }
+    .qd-meta-item strong { color: var(--dark); }
+
+    .qd-label {
+      font-size: 0.75rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.06em;
+      color: var(--green); margin-bottom: 0.7rem;
+    }
+
+    .qd-message {
+      background: #f8f9fa;
+      border-radius: 12px;
+      padding: 1.2rem 1.4rem;
+      font-size: 0.9rem; color: #333;
+      line-height: 1.7;
+      border-left: 3px solid #e0e0e0;
+      margin-bottom: 1.5rem;
+    }
+
+    /* Previous replies */
+    .reply-history { margin-bottom: 1.5rem; }
+
+    .reply-bubble {
+      display: flex; gap: 0.9rem;
+      margin-bottom: 1.2rem;
+      animation: fadeUp 0.4s ease both;
+    }
+
+    .reply-avatar {
+      width: 36px; height: 36px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.85rem; font-weight: 700;
+      flex-shrink: 0; margin-top: 2px;
+    }
+
+    .reply-avatar.admin { background: var(--green); color: #fff; }
+    .reply-avatar.user  { background: rgba(26,122,74,0.1); color: var(--green); }
+
+    .reply-content { flex: 1; }
+
+    .reply-meta {
+      font-size: 0.72rem; color: #aaa;
+      margin-bottom: 0.3rem;
+      display: flex; align-items: center; gap: 0.5rem;
+    }
+
+    .reply-meta strong { color: var(--dark); font-size: 0.78rem; }
+
+    .reply-text {
+      background: #f4f7f5;
+      border-radius: 0 12px 12px 12px;
+      padding: 0.85rem 1rem;
+      font-size: 0.85rem; color: #444;
+      line-height: 1.6;
+      border-left: 3px solid var(--green);
+    }
+
+    .reply-text.user-text {
+      background: #f8f9fa;
+      border-left-color: #ddd;
+      border-radius: 12px 12px 12px 0;
+    }
+
+    /* Reply form */
+    .reply-form-section {}
+
+    .reply-divider {
+      height: 1px; background: #ebebeb;
+      margin: 1.5rem 0;
+    }
+
+    .field-label {
+      display: block; font-size: 0.82rem; font-weight: 600;
+      color: var(--dark); margin-bottom: 0.5rem;
+    }
+
+    .field-label span { color: #e74c3c; margin-left: 2px; }
+
+    .form-input {
+      width: 100%;
+      padding: 0.78rem 1rem;
+      border: 1.5px solid #e0e0e0;
+      border-radius: 12px;
+      font-family: 'Poppins', sans-serif;
+      font-size: 0.88rem; color: var(--dark);
+      background: #fafafa;
+      transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+      outline: none;
+    }
+
+    .form-input:focus {
+      border-color: var(--green);
+      background: #fff;
+      box-shadow: 0 0 0 3px rgba(26,122,74,0.10);
+    }
+
+    textarea.form-input {
+      resize: vertical; min-height: 130px;
+      line-height: 1.6;
+    }
+
+    select.form-input {
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23888' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 1rem center;
+      padding-right: 2.5rem;
+    }
+
+    .char-counter { font-size: 0.75rem; color: #bbb; text-align: right; margin-top: 0.3rem; }
+
+    .field-group { margin-bottom: 1.3rem; }
+
+    .form-actions { display: flex; gap: 0.8rem; margin-top: 1.5rem; }
+
+    .btn-send {
+      flex: 1; padding: 0.85rem;
+      background: var(--green); color: #fff;
+      border: none; border-radius: 50px;
+      font-family: 'Poppins', sans-serif;
+      font-size: 0.95rem; font-weight: 700;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center; gap: 0.6rem;
+      transition: all 0.2s;
+      box-shadow: 0 4px 16px rgba(26,122,74,0.25);
+    }
+
+    .btn-send:hover { background: var(--green-light); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(26,122,74,0.35); }
+
+    .btn-cancel-reply {
+      padding: 0.85rem 1.5rem;
+      background: #fff; color: #666;
+      border: 1.5px solid #e0e0e0;
+      border-radius: 50px;
+      font-family: 'Poppins', sans-serif;
+      font-size: 0.88rem; font-weight: 600;
+      cursor: pointer; transition: all 0.2s;
+    }
+
+    .btn-cancel-reply:hover { border-color: #ccc; color: #333; }
+
+    /* Success banner */
+    .success-banner {
+      display: none;
+      background: linear-gradient(135deg, #eaf4ef, #d4edda);
+      border: 1.5px solid rgba(26,122,74,0.3);
+      border-radius: 14px;
+      padding: 1.2rem 1.5rem;
+      margin-bottom: 1.5rem;
+      display: none;
+      align-items: center;
+      gap: 1rem;
+      animation: fadeUp 0.4s ease both;
+    }
+
+    .success-banner.show { display: flex; }
+
+    .success-icon-sm {
+      width: 38px; height: 38px;
+      background: var(--green); border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1rem; color: #fff; flex-shrink: 0;
+      box-shadow: 0 0 0 6px rgba(26,122,74,0.12);
+    }
+
+    .success-banner h5 { font-size: 0.92rem; font-weight: 700; color: var(--green-dark); margin-bottom: 0.15rem; }
+    .success-banner p  { font-size: 0.8rem; color: #555; margin: 0; }
+
+    /* ── SIDEBAR RIGHT ── */
+    .right-sidebar { display: flex; flex-direction: column; gap: 1.5rem; }
+
+    .side-card {
+      background: #fff;
+      border: 1px solid #e0e0e0;
+      border-radius: 16px;
+      padding: 1.5rem;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+      animation: fadeUp 0.6s 0.2s ease both;
+    }
+
+    .side-card-title {
+      font-size: 0.95rem; font-weight: 700;
+      color: var(--dark); margin-bottom: 1.2rem;
+      display: flex; align-items: center; gap: 0.5rem;
+    }
+
+    .side-card-title i { color: var(--green); }
+
+    /* Query info list */
+    .info-row {
+      display: flex; align-items: flex-start;
+      gap: 0.8rem; padding: 0.65rem 0;
+      border-bottom: 1px solid #f5f5f5;
+    }
+
+    .info-row:last-child { border-bottom: none; padding-bottom: 0; }
+
+    .info-icon {
+      width: 32px; height: 32px;
+      background: rgba(26,122,74,0.08);
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      color: var(--green); font-size: 0.78rem; flex-shrink: 0;
+    }
+
+    .info-text h6 { font-size: 0.78rem; font-weight: 700; color: var(--dark); margin-bottom: 0.1rem; }
+    .info-text p  { font-size: 0.74rem; color: #888; margin: 0; }
+
+    /* Other pending queries */
+    .pending-item {
+      display: flex; align-items: center;
+      justify-content: space-between;
+      padding: 0.65rem 0;
+      border-bottom: 1px solid #f5f5f5;
+      cursor: pointer; transition: background 0.2s;
+    }
+
+    .pending-item:last-child { border-bottom: none; }
+    .pending-item:hover { background: #fafafa; border-radius: 8px; padding-left: 0.4rem; }
+
+    .pending-id { font-size: 0.75rem; font-weight: 700; color: #aaa; margin-bottom: 0.15rem; }
+    .pending-msg { font-size: 0.8rem; color: #444; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 200px; }
+
+    .pending-badge {
+      font-size: 0.65rem; font-weight: 700;
+      padding: 0.15rem 0.55rem; border-radius: 50px;
+      background: rgba(240,192,64,0.15); color: #b89000;
+      white-space: nowrap; flex-shrink: 0;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      padding: 1.5rem 2rem;
+      background: var(--dark);
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 1rem; margin-top: auto;
+    }
+
+    .footer-logo { font-weight: 800; font-size: 1rem; color: rgba(255,255,255,0.7); }
+    .footer-text { color: rgba(255,255,255,0.35); font-size: 0.78rem; }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeUp   { from{opacity:0;transform:translateY(20px);} to{opacity:1;transform:translateY(0);} }
+    @keyframes pulse    { 0%,100%{opacity:1;transform:scale(1);} 50%{opacity:.5;transform:scale(.8);} }
+
+    /* ── MOBILE TOGGLE ── */
+    .menu-toggle {
+      display: none;
+      position: fixed;
+      top: 1rem; left: 1rem;
+      z-index: 1100;
+      background: var(--green); color: #fff;
+      border: none; width: 38px; height: 38px;
+      border-radius: 10px; font-size: 1rem;
+      cursor: pointer;
+      align-items: center; justify-content: center;
+    }
+
+    @media (max-width: 1100px) {
+      .page-content { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 900px) {
+      .sidebar { transform: translateX(-100%); }
+      .sidebar.open { transform: translateX(0); }
+      .main-content { margin-left: 0; }
+      .menu-toggle { display: flex; }
+      .page-content { padding: 1.2rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Mobile Toggle -->
+  <button class="menu-toggle" id="menuToggle"><i class="fas fa-bars"></i></button>
+
+  <!-- SIDEBAR -->
+  <div class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-icon"><i class="fas fa-map-marker-alt"></i></div>
+      <span>CampusNav</span>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-label">Main</div>
+      <a class="nav-item" href="admin-dashboard.html">
+        <i class="fas fa-th-large"></i> Dashboard
+      </a>
+      <div class="nav-label">Management</div>
+      <a class="nav-item active" href="admin-dashboard.html">
+        <i class="fas fa-comments"></i> View Queries
+        <span style="margin-left:auto;background:rgba(240,192,64,0.2);color:#b89000;font-size:0.7rem;font-weight:700;padding:0.1rem 0.5rem;border-radius:50px;">4</span>
+      </a>
+      <a class="nav-item" href="admin-dashboard.html">
+        <i class="fas fa-map-marker-alt"></i> Manage Locations
+      </a>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="admin-info">
+        <div class="admin-avatar">A</div>
+        <div class="admin-info-text">
+          <h6>Admin</h6>
+          <p>admin@gicgrw.edu.pk</p>
+        </div>
+      </div>
+      <a href="admin-login.html" class="btn-logout">
+        <i class="fas fa-sign-out-alt"></i> Logout
+      </a>
+    </div>
+  </div>
+
+  <!-- MAIN CONTENT -->
+  <div class="main-content">
+
+    <!-- TOPBAR -->
+    <div class="topbar">
+      <div class="topbar-left">
+        <button class="back-btn" onclick="window.location.href='admin-dashboard.html'">
+          <i class="fas fa-arrow-left"></i> Back
+        </button>
+        <div class="topbar-title">Reply to <span>Query</span></div>
+      </div>
+      <div class="topbar-badge">
+        <span class="dot"></span> Admin Panel
+      </div>
+    </div>
+
+    <!-- PAGE CONTENT -->
+    <div class="page-content">
+
+      <!-- LEFT: QUERY DETAIL + REPLY FORM -->
+      <div>
+
+        <!-- Query Detail Card -->
+        <div class="query-detail-card">
+
+          <!-- Header -->
+          <div class="qd-header">
+            <div>
+              <div class="qd-id"><i class="fas fa-hashtag"></i> HD-0043</div>
+              <div class="qd-title">Where is the main library located?</div>
+            </div>
+            <span class="status-pill pending"><i class="fas fa-clock"></i> Pending</span>
+          </div>
+
+          <!-- Body -->
+          <div class="qd-body">
+
+            <!-- Meta -->
+            <div class="qd-meta-row">
+              <div class="qd-meta-item">
+                <i class="fas fa-user"></i>
+                <span>Submitted by <strong>Student User</strong></span>
+              </div>
+              <div class="qd-meta-item">
+                <i class="fas fa-calendar-alt"></i>
+                <span><strong>Aug 10, 2026</strong></span>
+              </div>
+              <div class="qd-meta-item">
+                <i class="fas fa-tag"></i>
+                <span><strong>Navigation</strong></span>
+              </div>
+            </div>
+
+            <!-- User Message -->
+            <div class="qd-label"><i class="fas fa-comment" style="margin-right:5px;"></i> User Query</div>
+            <div class="qd-message">
+              Where is the main library located? I have been looking for it on the campus map but cannot find it. Can you please guide me to the correct location and route?
+            </div>
+
+            <!-- Reply History -->
+            <div class="reply-history" id="replyHistory">
+              <div class="qd-label"><i class="fas fa-history" style="margin-right:5px;"></i> Reply History</div>
+
+              <!-- User original message bubble -->
+              <div class="reply-bubble">
+                <div class="reply-avatar user"><i class="fas fa-user" style="font-size:0.75rem;"></i></div>
+                <div class="reply-content">
+                  <div class="reply-meta">
+                    <strong>Student User</strong>
+                    <span>· Aug 10, 2026 · 10:24 AM</span>
+                  </div>
+                  <div class="reply-text user-text">
+                    Where is the main library located? I cannot find it on the map.
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+            <!-- Success Banner -->
+            <div class="success-banner" id="successBanner">
+              <div class="success-icon-sm"><i class="fas fa-check"></i></div>
+              <div>
+                <h5>Reply Sent Successfully!</h5>
+                <p>Query status has been updated. The user will see your reply in their dashboard.</p>
+              </div>
+            </div>
+
+            <!-- Reply Form -->
+            <div class="reply-divider"></div>
+            <div class="qd-label"><i class="fas fa-reply" style="margin-right:5px;"></i> Write Your Reply</div>
+
+            <div id="replyForm">
+              <div class="field-group">
+                <label class="field-label">Reply Message <span>*</span></label>
+                <textarea class="form-input" id="replyText" placeholder="Type your reply here..." maxlength="500"></textarea>
+                <div class="char-counter"><span id="charCount">0</span> / 500</div>
+              </div>
+
+              <div class="field-group">
+                <label class="field-label">Update Query Status <span>*</span></label>
+                <select class="form-input" id="statusSelect">
+                  <option value="progress">In Progress</option>
+                  <option value="resolved">Resolved</option>
+                </select>
+              </div>
+
+              <div class="form-actions">
+                <button class="btn-cancel-reply" onclick="window.location.href='admin-dashboard.html'">
+                  <i class="fas fa-times"></i> Cancel
+                </button>
+                <button class="btn-send" onclick="submitReply()">
+                  <i class="fas fa-paper-plane"></i> Send Reply
+                </button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT SIDEBAR -->
+      <div class="right-sidebar">
+
+        <!-- Query Info -->
+        <div class="side-card">
+          <div class="side-card-title"><i class="fas fa-info-circle"></i> Query Details</div>
+          <div class="info-row">
+            <div class="info-icon"><i class="fas fa-hashtag"></i></div>
+            <div class="info-text"><h6>Query ID</h6><p>#HD-0043</p></div>
+          </div>
+          <div class="info-row">
+            <div class="info-icon"><i class="fas fa-user"></i></div>
+            <div class="info-text"><h6>Submitted By</h6><p>Student User</p></div>
+          </div>
+          <div class="info-row">
+            <div class="info-icon"><i class="fas fa-calendar-alt"></i></div>
+            <div class="info-text"><h6>Date Submitted</h6><p>Aug 10, 2026</p></div>
+          </div>
+          <div class="info-row">
+            <div class="info-icon"><i class="fas fa-tag"></i></div>
+            <div class="info-text"><h6>Category</h6><p>Navigation</p></div>
+          </div>
+          <div class="info-row">
+            <div class="info-icon"><i class="fas fa-flag"></i></div>
+            <div class="info-text"><h6>Current Status</h6>
+              <p><span class="status-pill pending" style="font-size:0.68rem;padding:0.15rem 0.6rem;"><i class="fas fa-clock"></i> Pending</span></p>
+            </div>
+          </div>
+          <div class="info-row">
+            <div class="info-icon"><i class="fas fa-reply"></i></div>
+            <div class="info-text"><h6>Total Replies</h6><p id="replyCount">0 replies</p></div>
+          </div>
+        </div>
+
+        <!-- Admin Guidelines -->
+        <div class="side-card">
+          <div class="side-card-title"><i class="fas fa-shield-alt"></i> Reply Guidelines</div>
+          <div style="font-size:0.8rem;color:#555;line-height:1.7;">
+            <div style="display:flex;align-items:flex-start;gap:0.5rem;margin-bottom:0.7rem;">
+              <i class="fas fa-check-circle" style="color:var(--green);margin-top:3px;flex-shrink:0;"></i>
+              <span>Respond clearly and professionally.</span>
+            </div>
+            <div style="display:flex;align-items:flex-start;gap:0.5rem;margin-bottom:0.7rem;">
+              <i class="fas fa-check-circle" style="color:var(--green);margin-top:3px;flex-shrink:0;"></i>
+              <span>Update status to <strong>Resolved</strong> only when the issue is fully resolved.</span>
+            </div>
+            <div style="display:flex;align-items:flex-start;gap:0.5rem;margin-bottom:0.7rem;">
+              <i class="fas fa-check-circle" style="color:var(--green);margin-top:3px;flex-shrink:0;"></i>
+              <span>Set to <strong>In Progress</strong> if still working on it.</span>
+            </div>
+            <div style="display:flex;align-items:flex-start;gap:0.5rem;">
+              <i class="fas fa-check-circle" style="color:var(--green);margin-top:3px;flex-shrink:0;"></i>
+              <span>Admin must respond within <strong>24 hours</strong>.</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Other Pending Queries -->
+        <div class="side-card">
+          <div class="side-card-title"><i class="fas fa-clock"></i> Other Pending Queries</div>
+          <div class="pending-item" onclick="window.location.href='reply-query.html'">
+            <div>
+              <div class="pending-id">#HD-0042</div>
+              <div class="pending-msg">Is there parking near Faculty of Computing?</div>
+            </div>
+            <span class="pending-badge">Pending</span>
+          </div>
+          <div class="pending-item" onclick="window.location.href='reply-query.html'">
+            <div>
+              <div class="pending-id">#HD-0041</div>
+              <div class="pending-msg">How do I schedule a meeting with a professor?</div>
+            </div>
+            <span class="pending-badge">Pending</span>
+          </div>
+          <div class="pending-item" onclick="window.location.href='reply-query.html'">
+            <div>
+              <div class="pending-id">#HD-0040</div>
+              <div class="pending-msg">What are the library hours today?</div>
+            </div>
+            <span class="pending-badge">Pending</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer>
+      <div class="footer-logo">CampusNav · Admin Panel</div>
+      <div class="footer-text">© 2026 Govt. Islamia Graduate College, Gujranwala · BSIT22-G24</div>
+    </footer>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+  <script>
+    // Mobile sidebar
+    document.getElementById('menuToggle').addEventListener('click', () => {
+      document.getElementById('sidebar').classList.toggle('open');
+    });
+
+    // Char counter
+    const replyText = document.getElementById('replyText');
+    const charCount = document.getElementById('charCount');
+    replyText.addEventListener('input', () => { charCount.textContent = replyText.value.length; });
+
+    // Get query ID from URL
+    const urlParams  = new URLSearchParams(window.location.search);
+    const queryId    = urlParams.get('id') || 1;
+    let replyCount   = 0;
+
+    // Load query from backend
+    async function loadQuery() {
+      try {
+        const response = await fetch(`backend/admin_queries.php`);
+        const data     = await response.json();
+
+        if (!data.success) {
+          window.location.href = 'admin-login.html';
+          return;
+        }
+
+        const q = data.queries.find(q => q.id == queryId) || data.queries[0];
+        if (!q) return;
+
+        const tid = '#HD-' + String(q.id).padStart(4, '0');
+        document.querySelector('.qd-id').innerHTML = `<i class="fas fa-hashtag" style="font-size:0.7rem;"></i> ${tid.replace('#','')}`;
+        document.querySelector('.qd-title').textContent = q.message.substring(0, 60);
+        document.querySelector('.query-msg').textContent = q.message;
+        document.getElementById('replyCount').textContent = q.reply ? '1 reply' : '0 replies';
+
+        // Show existing reply if any
+        if (q.reply) {
+          replyCount = 1;
+          const history = document.getElementById('replyHistory');
+          const bubble  = document.createElement('div');
+          bubble.className = 'reply-bubble';
+          bubble.innerHTML = `
+            <div class="reply-avatar admin"><i class="fas fa-user-shield" style="font-size:0.75rem;"></i></div>
+            <div class="reply-content">
+              <div class="reply-meta"><strong>Admin</strong><span>· ${new Date(q.reply_date).toLocaleDateString()}</span></div>
+              <div class="reply-text">${q.reply}</div>
+            </div>`;
+          history.appendChild(bubble);
+        }
+
+        // Update status
+        const pill        = document.querySelector('.qd-header .status-pill');
+        const statusClass = q.status === 'Resolved' ? 'resolved' : q.status === 'In Progress' ? 'progress' : 'pending';
+        pill.className    = `status-pill ${statusClass}`;
+        pill.textContent  = q.status;
+
+        // Update sidebar info
+        document.getElementById('replyCount').textContent = replyCount + (replyCount === 1 ? ' reply' : ' replies');
+
+      } catch (err) {
+        console.error('Error loading query:', err);
+      }
+    }
+
+    // Submit reply to backend
+    async function submitReply() {
+      const reply  = replyText.value.trim();
+      const status = document.getElementById('statusSelect').value;
+
+      if (!reply) { alert('Please write a reply before sending.'); return; }
+
+      try {
+        const response = await fetch('backend/reply_query.php', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            query_id: parseInt(queryId),
+            reply:    reply,
+            status:   status === 'resolved' ? 'Resolved' : 'In Progress'
+          })
+        });
+        const data = await response.json();
+
+        if (data.success) {
+          // Add reply bubble
+          const history = document.getElementById('replyHistory');
+          const now     = new Date();
+          const timeStr = now.toLocaleTimeString('en-US', { hour:'2-digit', minute:'2-digit' });
+
+          const bubble = document.createElement('div');
+          bubble.className = 'reply-bubble';
+          bubble.innerHTML = `
+            <div class="reply-avatar admin"><i class="fas fa-user-shield" style="font-size:0.75rem;"></i></div>
+            <div class="reply-content">
+              <div class="reply-meta"><strong>Admin</strong><span>· Today · ${timeStr}</span></div>
+              <div class="reply-text">${reply}</div>
+            </div>`;
+          history.appendChild(bubble);
+
+          // Update reply count
+          replyCount++;
+          document.getElementById('replyCount').textContent = replyCount + (replyCount === 1 ? ' reply' : ' replies');
+
+          // Update status pill
+          const pill = document.querySelector('.qd-header .status-pill');
+          if (status === 'resolved') {
+            pill.className = 'status-pill resolved';
+            pill.innerHTML = '<i class="fas fa-check"></i> Resolved';
+          } else {
+            pill.className = 'status-pill progress';
+            pill.innerHTML = '<i class="fas fa-spinner fa-spin"></i> In Progress';
+          }
+
+          // Show success banner
+          const banner = document.getElementById('successBanner');
+          banner.classList.add('show');
+
+          // Reset form
+          replyText.value = '';
+          charCount.textContent = '0';
+
+          setTimeout(() => banner.classList.remove('show'), 5000);
+          bubble.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+        } else {
+          alert(data.message);
+        }
+      } catch (err) {
+        alert('Server error. Please try again.');
+      }
+    }
+
+    // Load query on page start
+    window.addEventListener('load', loadQuery);
+  </script>
+</body>
+</html>

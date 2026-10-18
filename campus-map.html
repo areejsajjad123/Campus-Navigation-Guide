@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Campus Map | CampusNav — Govt. Islamia College Gujranwala</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/>
+<style>
+:root{
+  --green:#1a7a4a;--gl:#25a865;--gd:#0f4f2f;
+  --white:#fff;--dark:#1a1a2e;--bg:#f4f7f5;
+  --shadow:0 4px 20px rgba(26,122,74,0.13);
+  --sw:320px;--r:14px;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Poppins',sans-serif;background:var(--bg);color:var(--dark);overflow:hidden;height:100vh;display:flex;flex-direction:column;}
+
+nav{z-index:1100;padding:.85rem 2rem;display:flex;align-items:center;justify-content:space-between;background:#fff;border-bottom:1px solid #e0e0e0;box-shadow:0 2px 12px rgba(0,0,0,.06);flex-shrink:0;}
+.nl{font-weight:800;font-size:1.1rem;color:var(--dark);text-decoration:none;display:flex;align-items:center;gap:.6rem;}
+.li{width:32px;height:32px;background:var(--green);border-radius:9px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:.9rem;}
+.nm{display:flex;align-items:center;gap:1.6rem;list-style:none;}
+.nm a{color:#444;text-decoration:none;font-size:.86rem;font-weight:500;transition:color .2s;}
+.nm a:hover,.nm a.act{color:var(--green);}
+.nb{background:var(--green);color:#fff!important;padding:.4rem 1.1rem;border-radius:50px;font-weight:600!important;}
+.nb:hover{background:var(--gl)!important;}
+.hb{display:none;flex-direction:column;gap:5px;cursor:pointer;background:none;border:none;}
+.hb span{display:block;width:24px;height:2px;background:var(--dark);border-radius:2px;}
+
+.tb{background:linear-gradient(135deg,var(--gd),var(--green));color:#fff;padding:.55rem 2rem;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
+.tb h6{font-weight:700;font-size:.85rem;margin:0;display:flex;align-items:center;gap:.5rem;}
+.lb{background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.3);color:#fff;padding:.16rem .7rem;border-radius:50px;font-size:.7rem;font-weight:600;display:flex;align-items:center;gap:5px;}
+.ld2{width:6px;height:6px;border-radius:50%;background:#a0ffb0;animation:pulse 1.5s infinite;}
+
+.ml{display:flex;flex:1;overflow:hidden;}
+
+/* SIDEBAR */
+.sb{width:var(--sw);background:#fff;display:flex;flex-direction:column;box-shadow:3px 0 16px rgba(0,0,0,.07);z-index:500;flex-shrink:0;transition:transform .3s;overflow:hidden;}
+.sb.col{transform:translateX(-100%);}
+.sbt{background:linear-gradient(135deg,var(--gd),var(--green));padding:1rem 1rem .85rem;}
+.sbt h6{color:rgba(255,255,255,.8);font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin-bottom:.65rem;}
+.sw2{position:relative;}
+.sw2 input{width:100%;padding:.52rem 2rem .52rem .85rem;border-radius:50px;border:none;background:rgba(255,255,255,.18);color:#fff;font-size:.8rem;font-family:'Poppins',sans-serif;outline:none;}
+.sw2 input::placeholder{color:rgba(255,255,255,.6);}
+.sw2 input:focus{background:rgba(255,255,255,.27);}
+.sw2 i{position:absolute;right:10px;top:50%;transform:translateY(-50%);color:rgba(255,255,255,.6);font-size:.75rem;pointer-events:none;}
+#sr{background:#fff;border-radius:10px;margin-top:5px;box-shadow:0 8px 24px rgba(0,0,0,.12);display:none;max-height:170px;overflow-y:auto;}
+.si{padding:.52rem .85rem;display:flex;align-items:center;gap:.55rem;cursor:pointer;font-size:.78rem;color:var(--dark);border-bottom:1px solid #f0f0f0;transition:background .15s;}
+.si:hover{background:#f0faf5;color:var(--green);}
+
+/* Route panel */
+.rp{padding:.85rem 1rem;border-bottom:1px solid #eef0ee;background:#fafcfb;}
+.rt{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--gd);margin-bottom:.6rem;display:flex;align-items:center;gap:.4rem;}
+.rs{width:100%;padding:.48rem .8rem;border:1.5px solid #d5e8dc;border-radius:50px;font-size:.78rem;font-family:'Poppins',sans-serif;color:var(--dark);background:#fff;appearance:none;cursor:pointer;outline:none;margin-bottom:.42rem;}
+.rs:focus{border-color:var(--green);}
+.rbs{display:flex;gap:.42rem;}
+.rb{flex:1;padding:.48rem .65rem;border:none;border-radius:50px;font-size:.76rem;font-family:'Poppins',sans-serif;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:4px;transition:all .2s;}
+.rg{background:var(--green);color:#fff;}.rg:hover{background:var(--gl);}
+.rd{background:var(--gd);color:#fff;}.rd:hover{background:var(--green);}
+.ro{background:transparent;color:var(--green);border:1.5px solid var(--green);flex:0 0 auto;padding:.48rem .8rem;}.ro:hover{background:rgba(26,122,74,.08);}
+
+.sl{flex:1;overflow-y:auto;padding:.35rem 0;}
+.sl::-webkit-scrollbar{width:3px;}
+.sl::-webkit-scrollbar-thumb{background:#c5d9c8;border-radius:3px;}
+.cl{font-size:.65rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#bbb;padding:.6rem 1rem .22rem;}
+.li2{display:flex;align-items:center;gap:.65rem;padding:.52rem 1rem;cursor:pointer;border-left:3px solid transparent;transition:all .18s;}
+.li2:hover{background:#f0faf5;border-left-color:var(--gl);}
+.li2.act{background:#e6f5ec;border-left-color:var(--green);}
+.lico{width:29px;height:29px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;}
+.lin{flex:1;min-width:0;}
+.lna{font-size:.78rem;font-weight:600;color:var(--dark);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.lca{font-size:.68rem;color:#aaa;}
+
+.ma{flex:1;position:relative;overflow:hidden;}
+#map{width:100%;height:100%;}
+
+.sbt3{position:absolute;top:11px;left:11px;z-index:600;background:#fff;border:none;border-radius:9px;width:36px;height:36px;display:none;align-items:center;justify-content:center;box-shadow:var(--shadow);cursor:pointer;color:var(--green);font-size:14px;}
+.mc{position:absolute;top:11px;right:11px;z-index:600;display:flex;flex-direction:column;gap:6px;}
+.mb{background:#fff;border:none;border-radius:9px;width:36px;height:36px;display:flex;align-items:center;justify-content:center;box-shadow:var(--shadow);cursor:pointer;color:var(--green);font-size:13px;transition:all .2s;position:relative;}
+.mb:hover{background:var(--green);color:#fff;}
+.mb .tp{position:absolute;right:44px;top:50%;transform:translateY(-50%);background:var(--dark);color:#fff;font-size:.67rem;padding:3px 7px;border-radius:5px;white-space:nowrap;opacity:0;pointer-events:none;transition:opacity .2s;font-family:'Poppins',sans-serif;}
+.mb:hover .tp{opacity:1;}
+
+/* Route info strip */
+.rst{position:absolute;top:11px;left:50%;transform:translateX(-50%);z-index:600;background:#fff;border-radius:50px;padding:.42rem 1.2rem;box-shadow:var(--shadow);display:none;align-items:center;gap:.85rem;font-size:.78rem;font-weight:600;color:var(--gd);border:1.5px solid #d5e8dc;}
+.rst.show{display:flex;}
+.rst i{color:var(--green);}
+.rd2{width:1px;height:14px;background:#d5e8dc;}
+
+/* Info popup */
+.ip{position:absolute;bottom:16px;left:50%;transform:translateX(-50%);z-index:600;background:#fff;border-radius:var(--r);box-shadow:0 8px 32px rgba(26,122,74,.15);padding:1.05rem 1.3rem;min-width:285px;max-width:400px;border-top:3px solid var(--green);display:none;animation:su .3s ease;}
+.ip.show{display:block;}
+@keyframes su{from{transform:translateX(-50%) translateY(14px);opacity:0;}to{transform:translateX(-50%) translateY(0);opacity:1;}}
+.iph{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:.38rem;}
+.ipt{font-size:.93rem;font-weight:700;color:var(--gd);}
+.ipc2{background:none;border:none;cursor:pointer;color:#bbb;font-size:13px;}
+.ipc2:hover{color:#e74c3c;}
+.ipb{display:inline-block;font-size:.67rem;font-weight:700;padding:.11rem .62rem;border-radius:50px;text-transform:uppercase;letter-spacing:.05em;margin-bottom:.45rem;}
+.ipd{font-size:.76rem;color:#666;line-height:1.6;margin-bottom:.45rem;}
+.ipm{font-size:.7rem;color:#999;margin-bottom:.75rem;}
+.ipm i{color:var(--green);margin-right:3px;}
+.ipa{display:flex;gap:.42rem;}
+.ipbtn{flex:1;padding:.48rem .85rem;border:none;border-radius:50px;font-size:.76rem;font-family:'Poppins',sans-serif;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:4px;transition:all .2s;}
+.ipm2{background:var(--green);color:#fff;}.ipm2:hover{background:var(--gl);}
+.ips{background:#f0faf5;color:var(--green);border:1.5px solid #d5e8dc;flex:0 0 auto;}.ips:hover{background:#e0f5e8;}
+
+.gb2{position:absolute;bottom:14px;right:14px;z-index:600;background:#fff;border-radius:50px;padding:.36rem .88rem;box-shadow:var(--shadow);font-size:.7rem;font-weight:500;display:flex;align-items:center;gap:6px;color:#999;border:1px solid #e8e8e8;}
+.gd3{width:7px;height:7px;border-radius:50%;background:#ccc;}
+.gd3.on{background:var(--gl);animation:pulse 1.5s infinite;}
+
+.lg{position:absolute;bottom:14px;left:14px;z-index:600;background:#fff;border-radius:11px;padding:.72rem .95rem;box-shadow:var(--shadow);font-size:.7rem;border:1px solid #e8f0e8;}
+.lg h6{font-size:.62rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#bbb;margin-bottom:.42rem;}
+.lgi{display:flex;align-items:center;gap:6px;margin-bottom:3px;color:var(--dark);}
+.lgd{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+
+.ldr{position:absolute;inset:0;background:rgba(244,247,245,.92);z-index:900;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:11px;}
+.sp{width:38px;height:38px;border:3px solid #d5e8dc;border-top-color:var(--green);border-radius:50%;animation:spin .8s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.ldr p{font-size:.8rem;color:#888;font-weight:500;}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+@keyframes markerPulse{
+  0%{transform:scale(1);box-shadow:0 0 0 0 rgba(26,122,74,0.7);}
+  50%{transform:scale(1.2);box-shadow:0 0 0 12px rgba(26,122,74,0);}
+  100%{transform:scale(1);box-shadow:0 0 0 0 rgba(26,122,74,0);}
+}
+.pulse-marker{animation:markerPulse 1s ease-in-out 3;}
+
+@media(max-width:768px){
+  :root{--sw:280px;}
+  .sb{position:absolute;left:0;top:0;bottom:0;z-index:700;}
+  .sb.col{transform:translateX(-100%);}
+  .sbt3{display:flex!important;}
+  .lg{display:none;}
+  .hb{display:flex;}
+  .nm{display:none;position:absolute;top:100%;left:0;right:0;background:#fff;flex-direction:column;padding:1.1rem 2rem;gap:1rem;border-bottom:1px solid #e0e0e0;box-shadow:0 4px 12px rgba(0,0,0,.08);}
+  .nm.open{display:flex;}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nl">
+    <div class="li"><i class="fas fa-map-marker-alt"></i></div>
+    CampusNav
+  </a>
+  <button class="hb" id="hb"><span></span><span></span><span></span></button>
+  <ul class="nm" id="nm">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="campus-map.html" class="act">Campus Map</a></li>
+    <li><a href="helpdesk.html">Help Desk</a></li>
+    <li><a href="login.html">Login</a></li>
+    <li><a href="register.html" class="nb">Sign Up</a></li>
+  </ul>
+</nav>
+
+<div class="tb">
+  <h6><i class="fas fa-map-marked-alt"></i> Govt. Graduate Islamia College, Gujranwala — Interactive Campus Map</h6>
+  <div class="lb"><span class="ld2"></span> Live Map</div>
+</div>
+
+<div class="ml">
+  <div class="sb" id="sb">
+    <div class="sbt">
+      <h6><i class="fas fa-search" style="margin-right:4px"></i> Find a Location</h6>
+      <div class="sw2">
+        <input type="text" id="sinp" placeholder="Search buildings, departments..." autocomplete="off"/>
+        <i class="fas fa-search"></i>
+      </div>
+      <div id="sr"></div>
+    </div>
+    <div class="rp">
+      <div class="rt"><i class="fas fa-route"></i> Get Route</div>
+      <select class="rs" id="fs"><option value="">📍 From (My Location / Select)</option></select>
+      <select class="rs" id="ts"><option value="">🏁 To (Destination)</option></select>
+      <div class="rbs">
+        <button class="rb rd" id="gb"><i class="fas fa-crosshairs"></i> GPS</button>
+        <button class="rb rg" id="rbtn"><i class="fas fa-directions"></i> Go</button>
+        <button class="rb ro" id="cb"><i class="fas fa-times"></i></button>
+      </div>
+    </div>
+    <div class="sl" id="sl"></div>
+  </div>
+
+  <div class="ma">
+    <div class="ldr" id="ldr"><div class="sp"></div><p>Loading Campus Map...</p></div>
+    <button class="sbt3" id="sbt3" style="display:none"><i class="fas fa-bars"></i></button>
+    <div id="map"></div>
+    <div class="mc">
+      <button class="mb" id="fb"><i class="fas fa-expand-arrows-alt"></i><span class="tp">Fit Campus</span></button>
+      <button class="mb" id="satb"><i class="fas fa-satellite"></i><span class="tp">Satellite View</span></button>
+      <button class="mb" id="lb3"><i class="fas fa-location-arrow"></i><span class="tp">My Location</span></button>
+    </div>
+    <div class="rst" id="rst">
+      <span><i class="fas fa-road"></i> <span id="rdist">--</span></span>
+      <div class="rd2"></div>
+      <span><i class="fas fa-walking"></i> <span id="rtime">--</span></span>
+    </div>
+    <div class="ip" id="ip">
+      <div class="iph">
+        <div class="ipt" id="ipt">Location</div>
+        <button class="ipc2" id="ipc"><i class="fas fa-times"></i></button>
+      </div>
+      <div class="ipb" id="ipb">Cat</div>
+      <div class="ipd" id="ipd">Desc</div>
+      <div class="ipm" id="ipmeta"></div>
+      <div class="ipa">
+        <button class="ipbtn ipm2" id="ipr"><i class="fas fa-directions"></i> Get Route Here</button>
+        <button class="ipbtn ips" onclick="closeP()"><i class="fas fa-times"></i></button>
+      </div>
+    </div>
+    <div class="gb2"><div class="gd3" id="gdot"></div><span id="glbl">GPS: Off</span></div>
+    <div class="lg">
+      <h6>Legend</h6>
+      <div class="lgi"><div class="lgd" style="background:#1a7a4a"></div> Academic</div>
+      <div class="lgi"><div class="lgd" style="background:#7b2d8b"></div> Labs / IT</div>
+      <div class="lgi"><div class="lgd" style="background:#b8860b"></div> Admin</div>
+      <div class="lgi"><div class="lgd" style="background:#25a865"></div> Facilities</div>
+      <div class="lgi"><div class="lgd" style="background:#e74c3c"></div> Gates</div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script>
+// ══════════════════════════════════════════════════════════
+// REAL GPS COORDINATES — collected physically
+// Campus: Govt Graduate Islamia College Gujranwala
+// ══════════════════════════════════════════════════════════
+const CENTER = [32.163715, 74.172257];
+
+// ── CAMPUS INTERNAL ROAD NETWORK ──────────────────────────
+// Based on 3D model + hand drawn map
+// Main road from gate → splits left & right → back area
+const ROADS = [
+  // Main entrance road (gate to first junction)
+  [[32.163715,74.172257],[32.163780,74.172257],[32.163842,74.172257]],
+  // Left side road (along left buildings)
+  [[32.163842,74.172257],[32.163869,74.172350],[32.164042,74.172400],[32.164093,74.172300],[32.164607,74.172350],[32.164949,74.172200],[32.165380,74.172130]],
+  // Right side road (along right buildings)
+  [[32.163842,74.172257],[32.163780,74.172350],[32.163517,74.172431],[32.163388,74.173000],[32.163035,74.172900],[32.162927,74.172693],[32.162668,74.173200]],
+  // Cross road 1 (connects left & right — middle)
+  [[32.163869,74.172446],[32.163780,74.172350]],
+  // Cross road 2 (upper connection)
+  [[32.164607,74.172456],[32.164500,74.172800],[32.164400,74.173000]],
+  // Back road (to study room & back gate)
+  [[32.165380,74.172130],[32.165300,74.172400],[32.165207,74.172824]],
+  // Sports ground path
+  [[32.163842,74.172257],[32.164007,74.172700],[32.164007,74.173272]],
+];
+
+// ── LOCATIONS DATA ────────────────────────────────────────
+const LOCS = [
+  // GATES
+  {id:1,  name:"Main Gate",                              cat:"Gates",      icon:"🚪",color:"#e74c3c", lat:32.163715,lng:74.172257, desc:"Main entrance gate of the college on Mayor Aslam Butt Road.", timing:"7 AM – 6 PM",   contact:"055-3844800"},
+  {id:2,  name:"Back Gate",                              cat:"Gates",      icon:"🚪",color:"#e74c3c", lat:32.165207,lng:74.172824, desc:"Back exit gate near Study Room.",                             timing:"7 AM – 4 PM",   contact:"—"},
+  // LEFT OF GATE
+  {id:3,  name:"Clerk + Admin + Fee Office",             cat:"Admin",      icon:"🏢",color:"#b8860b", lat:32.163842,lng:74.172233, desc:"Clerk Office, Admin Office and Fee Submission — one building near main gate.", timing:"8 AM – 4 PM", contact:"055-3844801"},
+  {id:4,  name:"English Department",                     cat:"Academic",   icon:"📚",color:"#1a7a4a", lat:32.163869,lng:74.172446, desc:"Full English Literature and Language Department.",             timing:"8 AM – 3 PM",   contact:"Ext. 109"},
+  {id:5,  name:"Statistics Department",                  cat:"Academic",   icon:"📊",color:"#1a7a4a", lat:32.164042,lng:74.172610, desc:"Department of Statistics.",                                   timing:"8 AM – 3 PM",   contact:"Ext. 115"},
+  {id:6,  name:"Washrooms",                              cat:"Facilities", icon:"🚻",color:"#25a865", lat:32.164014,lng:74.172424, desc:"Washroom facilities near Statistics Department.",              timing:"Open",          contact:"—"},
+  {id:7,  name:"Physics Department",                     cat:"Academic",   icon:"⚡",color:"#1a7a4a", lat:32.164093,lng:74.172208, desc:"Physics Department building.",                                timing:"8 AM – 3 PM",   contact:"Ext. 107"},
+  {id:8,  name:"Museum + College Hall + Inter Block 1",  cat:"Academic",   icon:"🏺",color:"#1a7a4a", lat:32.164607,lng:74.172456, desc:"Large building: College Museum, Examination Hall and Intermediate Block 1.", timing:"8 AM – 4 PM", contact:"Ext. 300"},
+  {id:9,  name:"Library",                                cat:"Facilities", icon:"📖",color:"#25a865", lat:32.164949,lng:74.172148, desc:"College Library — separate building with thousands of books.", timing:"8 AM – 4 PM",   contact:"Ext. 400"},
+  {id:10, name:"Intermediate Block 2",                   cat:"Academic",   icon:"🏫",color:"#1a7a4a", lat:32.165380,lng:74.172130, desc:"Second Intermediate Block — separate building.",               timing:"8 AM – 3 PM",   contact:"Ext. 117"},
+  // RIGHT OF GATE
+  {id:11, name:"Principal Office + Urdu / Political Sci",cat:"Admin",      icon:"🎓",color:"#b8860b", lat:32.163517,lng:74.172431, desc:"GF: Principal Office + Urdu Department. FF: Political Science Department.", timing:"9 AM – 3 PM", contact:"055-3844800"},
+  {id:12, name:"Islamic Study Department",               cat:"Academic",   icon:"☪️",color:"#1a7a4a", lat:32.163388,lng:74.173150, desc:"Islamic Studies / Islamic Education Department.",              timing:"8 AM – 3 PM",   contact:"Ext. 111"},
+  {id:13, name:"Chemistry (GF) + IT Department (FF)",    cat:"Labs",       icon:"💻",color:"#7b2d8b", lat:32.163035,lng:74.173033, desc:"GF: Chemistry Department. FF: IT / Computer Science (BSIT).", timing:"8 AM – 5 PM",   contact:"Ext. 200"},
+  {id:14, name:"Zoology + Mathematics Department",       cat:"Academic",   icon:"🦎",color:"#1a7a4a", lat:32.162668,lng:74.173449, desc:"Zoology and Mathematics Departments — same building.",         timing:"8 AM – 3 PM",   contact:"Ext. 104"},
+  {id:15, name:"Canteen / Cafeteria",                    cat:"Facilities", icon:"🍽️",color:"#25a865", lat:32.162927,lng:74.172693, desc:"Student Canteen and Cafeteria.",                               timing:"8 AM – 5 PM",   contact:"—"},
+  // BACK
+  {id:16, name:"Study Room",                             cat:"Facilities", icon:"📖",color:"#25a865", lat:32.165207,lng:74.172824, desc:"Study Rooms — large building near back gate.",                 timing:"8 AM – 5 PM",   contact:"—"},
+  {id:17, name:"Sports Ground",                          cat:"Facilities", icon:"⚽",color:"#25a865", lat:32.164007,lng:74.173272, desc:"Big open sports ground — cricket, football, athletics.",        timing:"Open",          contact:"—"},
+];
+
+// ── MAP INIT ──────────────────────────────────────────────
+const map = L.map('map',{center:CENTER, zoom:17, zoomControl:false});
+
+const osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+  {attribution:'© OpenStreetMap', maxZoom:20});
+const sat = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+  {attribution:'© Esri', maxZoom:20});
+osm.addTo(map);
+let isSat=false;
+
+// ── CAMPUS BOUNDARY ───────────────────────────────────────
+L.polygon([
+  [32.1625,74.1718],[32.1625,74.1748],
+  [32.1658,74.1748],[32.1658,74.1718]
+],{color:'#1a7a4a',weight:2.5,fillColor:'#1a7a4a',fillOpacity:0.05,dashArray:'6 4'}).addTo(map);
+
+// ── DRAW INTERNAL ROADS ───────────────────────────────────
+const roadStyle = {color:'#8B7355',weight:4,opacity:0.85};
+const roadHighStyle = {color:'#1a7a4a',weight:5,opacity:1};
+
+const roadLayers = [];
+ROADS.forEach(pts=>{
+  const line = L.polyline(pts, roadStyle).addTo(map);
+  roadLayers.push(line);
+});
+
+// ── SPORTS GROUND ─────────────────────────────────────────
+L.polygon([
+  [32.1628,74.1728],[32.1628,74.1745],
+  [32.1652,74.1745],[32.1652,74.1728]
+],{color:'#25a865',weight:2,fillColor:'#25a865',fillOpacity:0.22,dashArray:'4 3'})
+.addTo(map)
+.bindTooltip('⚽ Sports Ground',{
+  permanent:true,direction:'center',
+  className:'leaflet-tooltip'
+});
+
+// ── MARKERS ───────────────────────────────────────────────
+const mMap={};
+let uMarker=null, uLat=null, uLng=null;
+let routeLine=null, fromMarker=null, toMarker=null;
+
+function mkIcon(loc, highlighted=false){
+  const size = highlighted ? 42 : 36;
+  const shadow = highlighted ? '0 0 0 5px rgba(26,122,74,0.35), 0 4px 14px rgba(0,0,0,0.3)' : '0 4px 14px rgba(0,0,0,0.25)';
+  return L.divIcon({
+    className:'',
+    html:`<div style="
+      background:${loc.color};
+      width:${size}px;height:${size}px;border-radius:50%;
+      display:flex;align-items:center;justify-content:center;
+      font-size:${highlighted?18:15}px;
+      border:3px solid white;
+      box-shadow:${shadow};
+      cursor:pointer;
+      transition:all .2s;">
+      ${loc.icon}
+    </div>`,
+    iconSize:[size,size],iconAnchor:[size/2,size/2],
+  });
+}
+
+LOCS.forEach(loc=>{
+  const m = L.marker([loc.lat,loc.lng],{icon:mkIcon(loc)})
+    .addTo(map)
+    .on('click',()=>showP(loc));
+  mMap[loc.id]=m;
+});
+
+// ── SIDEBAR LIST ──────────────────────────────────────────
+const cats=[...new Set(LOCS.map(l=>l.cat))];
+const listEl=document.getElementById('sl');
+const fs=document.getElementById('fs');
+const ts=document.getElementById('ts');
+
+cats.forEach(cat=>{
+  const lbl=document.createElement('div');
+  lbl.className='cl'; lbl.textContent=cat;
+  listEl.appendChild(lbl);
+  LOCS.filter(l=>l.cat===cat).forEach(loc=>{
+    const item=document.createElement('div');
+    item.className='li2'; item.id=`l-${loc.id}`;
+    item.innerHTML=`
+      <div class="lico" style="background:${loc.color}18;color:${loc.color}">${loc.icon}</div>
+      <div class="lin">
+        <div class="lna">${loc.name}</div>
+        <div class="lca">${loc.cat}</div>
+      </div>
+      <i class="fas fa-chevron-right" style="color:#ddd;font-size:10px"></i>`;
+    item.addEventListener('click',()=>{
+      map.flyTo([loc.lat,loc.lng],19,{duration:1.2});
+      showP(loc);
+      if(window.innerWidth<=768) document.getElementById('sb').classList.add('col');
+    });
+    listEl.appendChild(item);
+    [fs,ts].forEach(s=>{
+      const o=document.createElement('option');
+      o.value=loc.id; o.textContent=`${loc.icon} ${loc.name}`;
+      s.appendChild(o);
+    });
+  });
+});
+
+// ── SEARCH ────────────────────────────────────────────────
+const sinp=document.getElementById('sinp');
+const sres=document.getElementById('sr');
+sinp.addEventListener('input',()=>{
+  const q=sinp.value.trim().toLowerCase();
+  sres.innerHTML='';
+  if(!q){sres.style.display='none';return;}
+  const hits=LOCS.filter(l=>l.name.toLowerCase().includes(q)||l.cat.toLowerCase().includes(q));
+  sres.style.display='block';
+  if(!hits.length){sres.innerHTML=`<div class="si">❌ No results found</div>`;return;}
+  hits.slice(0,6).forEach(loc=>{
+    const d=document.createElement('div'); d.className='si';
+    d.innerHTML=`${loc.icon} ${loc.name}<span style="margin-left:auto;color:#ccc;font-size:.67rem">${loc.cat}</span>`;
+    d.addEventListener('click',()=>{
+      sres.style.display='none'; sinp.value='';
+      map.flyTo([loc.lat,loc.lng],19,{duration:1.2});
+      showP(loc);
+      highlightMarker(loc);
+      if(window.innerWidth<=768) document.getElementById('sb').classList.add('col');
+    });
+    sres.appendChild(d);
+  });
+});
+document.addEventListener('click',e=>{if(!e.target.closest('.sw2'))sres.style.display='none';});
+
+// ── HIGHLIGHT MARKER ──────────────────────────────────────
+function highlightMarker(loc){
+  // Reset all markers
+  LOCS.forEach(l=> mMap[l.id].setIcon(mkIcon(l,false)));
+  // Highlight selected
+  mMap[loc.id].setIcon(mkIcon(loc,true));
+  mMap[loc.id].openPopup();
+}
+
+// ── INFO POPUP ────────────────────────────────────────────
+function showP(loc){
+  document.querySelectorAll('.li2').forEach(el=>el.classList.remove('act'));
+  const li=document.getElementById(`l-${loc.id}`);
+  if(li){li.classList.add('act');li.scrollIntoView({block:'nearest'});}
+  document.getElementById('ipt').textContent=loc.name;
+  const b=document.getElementById('ipb');
+  b.textContent=loc.cat;
+  b.style.cssText=`background:${loc.color}18;color:${loc.color};display:inline-block;font-size:.67rem;font-weight:700;padding:.11rem .62rem;border-radius:50px;text-transform:uppercase;letter-spacing:.05em;margin-bottom:.45rem;`;
+  document.getElementById('ipd').textContent=loc.desc;
+  document.getElementById('ipmeta').innerHTML=`<i class="fas fa-clock"></i> ${loc.timing} &nbsp;·&nbsp; <i class="fas fa-phone"></i> ${loc.contact}`;
+  document.getElementById('ipr').onclick=()=>{ts.value=loc.id; genRoute(); closeP();};
+  document.getElementById('ip').classList.add('show');
+  highlightMarker(loc);
+}
+function closeP(){
+  document.getElementById('ip').classList.remove('show');
+  document.querySelectorAll('.li2').forEach(el=>el.classList.remove('act'));
+  LOCS.forEach(l=> mMap[l.id].setIcon(mkIcon(l,false)));
+}
+document.getElementById('ipc').addEventListener('click',closeP);
+
+// ── ROUTE (campus internal — straight line with animation) ─
+document.getElementById('rbtn').addEventListener('click',genRoute);
+
+function genRoute(){
+  const fv=fs.value, tv=ts.value;
+  if(!tv){alert('Please select a destination!');return;}
+
+  let fromLat,fromLng,fromName;
+  if(fv){
+    const fl=LOCS.find(l=>l.id==fv);
+    fromLat=fl.lat; fromLng=fl.lng; fromName=fl.name;
+  } else if(uLat&&uLng){
+    fromLat=uLat; fromLng=uLng; fromName='Your Location';
+  } else {
+    alert('Please select a starting point or enable GPS!'); return;
+  }
+
+  const tl=LOCS.find(l=>l.id==tv);
+
+  // Remove old route
+  if(routeLine){map.removeLayer(routeLine);}
+  if(fromMarker){map.removeLayer(fromMarker);}
+  if(toMarker){map.removeLayer(toMarker);}
+
+  // Draw campus-internal route line
+  routeLine = L.polyline(
+    [[fromLat,fromLng],[tl.lat,tl.lng]],
+    {color:'#1a7a4a', weight:5, opacity:.9, dashArray:'10 6'}
+  ).addTo(map);
+
+  // Animate route highlight
+  roadLayers.forEach(r=>{
+    r.setStyle(roadHighStyle);
+    setTimeout(()=>r.setStyle(roadStyle), 3000);
+  });
+
+  // From marker
+  fromMarker = L.marker([fromLat,fromLng],{icon:L.divIcon({
+    className:'',
+    html:`<div style="background:#1a7a4a;color:#fff;padding:4px 10px;border-radius:50px;font-size:.72rem;font-weight:700;font-family:'Poppins',sans-serif;box-shadow:0 3px 10px rgba(0,0,0,.25);white-space:nowrap;">📍 ${fromName}</div>`,
+    iconAnchor:[0,10],
+  })}).addTo(map);
+
+  // To marker
+  toMarker = L.marker([tl.lat,tl.lng],{icon:L.divIcon({
+    className:'',
+    html:`<div style="background:#e74c3c;color:#fff;padding:4px 10px;border-radius:50px;font-size:.72rem;font-weight:700;font-family:'Poppins',sans-serif;box-shadow:0 3px 10px rgba(0,0,0,.25);white-space:nowrap;">🏁 ${tl.name}</div>`,
+    iconAnchor:[0,10],
+  })}).addTo(map);
+
+  // Calculate distance
+  const R=6371000;
+  const dLat=(tl.lat-fromLat)*Math.PI/180;
+  const dLng=(tl.lng-fromLng)*Math.PI/180;
+  const a=Math.sin(dLat/2)**2+Math.cos(fromLat*Math.PI/180)*Math.cos(tl.lat*Math.PI/180)*Math.sin(dLng/2)**2;
+  const dist=Math.round(R*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a)));
+  const mins=Math.max(1,Math.ceil(dist/80));
+
+  document.getElementById('rdist').textContent=dist<1000?`${dist}m`:`${(dist/1000).toFixed(2)}km`;
+  document.getElementById('rtime').textContent=`~${mins} min walk`;
+  document.getElementById('rst').classList.add('show');
+
+  map.fitBounds([[fromLat,fromLng],[tl.lat,tl.lng]],{padding:[80,80]});
+}
+
+document.getElementById('cb').addEventListener('click',()=>{
+  if(routeLine){map.removeLayer(routeLine); routeLine=null;}
+  if(fromMarker){map.removeLayer(fromMarker); fromMarker=null;}
+  if(toMarker){map.removeLayer(toMarker); toMarker=null;}
+  fs.value=''; ts.value='';
+  roadLayers.forEach(r=>r.setStyle(roadStyle));
+  document.getElementById('rst').classList.remove('show');
+});
+
+// ── GPS ───────────────────────────────────────────────────
+function locMe(){
+  if(!navigator.geolocation){alert('Geolocation not supported.');return;}
+  navigator.geolocation.getCurrentPosition(pos=>{
+    uLat=pos.coords.latitude; uLng=pos.coords.longitude;
+    if(uMarker)map.removeLayer(uMarker);
+    uMarker=L.marker([uLat,uLng],{icon:L.divIcon({
+      className:'',
+      html:`<div style="background:#1a7a4a;width:14px;height:14px;border-radius:50%;border:3px solid white;box-shadow:0 0 0 7px rgba(26,122,74,0.22)"></div>`,
+      iconSize:[14,14],iconAnchor:[7,7],
+    })}).addTo(map).bindPopup('<b style="font-family:Poppins;color:#0f4f2f">📍 You are here</b>').openPopup();
+    map.flyTo([uLat,uLng],18);
+    document.getElementById('gdot').classList.add('on');
+    document.getElementById('glbl').textContent='GPS: Active';
+  },()=>alert('Location access denied.'));
+}
+document.getElementById('gb').addEventListener('click',locMe);
+document.getElementById('lb3').addEventListener('click',locMe);
+
+// ── MAP CONTROLS ──────────────────────────────────────────
+document.getElementById('fb').addEventListener('click',()=>map.flyTo(CENTER,17,{duration:1}));
+document.getElementById('satb').addEventListener('click',function(){
+  if(isSat){
+    map.removeLayer(sat);osm.addTo(map);
+    this.innerHTML='<i class="fas fa-satellite"></i><span class="tp">Satellite View</span>';
+  }else{
+    map.removeLayer(osm);sat.addTo(map);
+    this.innerHTML='<i class="fas fa-map"></i><span class="tip">Map View</span>';
+  }
+  isSat=!isSat;
+});
+
+document.getElementById('sbt3').addEventListener('click',()=>document.getElementById('sb').classList.toggle('col'));
+document.getElementById('hb').addEventListener('click',()=>document.getElementById('nm').classList.toggle('open'));
+
+map.whenReady(()=>setTimeout(()=>document.getElementById('ldr').style.display='none',800));
+</script>
+</body>
+</html>
